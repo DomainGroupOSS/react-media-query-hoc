@@ -1,0 +1,46 @@
+{
+  "name": "react-media-query-hoc",
+  "version": "0.0.1",
+  "description": "A dead simple React Higher Order Component (HOC) that uses context for matching media queries",
+  "main": "dist/media-query.js",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "mkdir -p dist && babel src --out-dir dist",
+    "test": "mocha test --compilers js:babel-register"
+  },
+  "keywords": [
+    "react",
+    "hoc",
+    "context",
+    "matchmedia",
+    "media-queries",
+    "match-media",
+    "responsive"
+  ],
+  "author": "Martin",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^15.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "enzyme": "^2.3.0",
+    "expect": "^1.20.1",
+    "jsdom": "^11.0.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^2.5.3",
+    "react": "^15.1.0",
+    "react-addons-test-utils": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "sinon": "^2.3.2"
+  },
+  "dependencies": {
+    "hoist-non-react-statics": "^1.2.0",
+    "matchmedia": "^0.1.2",
+    "prop-types": "^15.5.10"
+  }
+}
