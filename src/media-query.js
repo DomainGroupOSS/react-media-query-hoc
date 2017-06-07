@@ -17,10 +17,6 @@ function getDisplayName(WrappedComponent) {
 const makeWrapper = mediaQueryOptions => (WrappedComponent) => {
   const queries = mediaQueryOptions || defaultQueries;
 
-  const defaultValues = {
-    values: {},
-  };
-
   class MediaQuery extends React.Component {
 
     constructor() {
@@ -41,13 +37,13 @@ const makeWrapper = mediaQueryOptions => (WrappedComponent) => {
       this.match();
 
       Object.keys(queries).forEach((key) => {
-        matchMedia(queries[key], defaultValues).addListener(this.match);
+        matchMedia(queries[key], {}).addListener(this.match);
       });
     }
 
     componentWillUnmount() {
       Object.keys(queries).forEach((key) => {
-        matchMedia(queries[key], defaultValues).removeListener(this.match);
+        matchMedia(queries[key], {}).removeListener(this.match);
       });
     }
 
@@ -55,7 +51,7 @@ const makeWrapper = mediaQueryOptions => (WrappedComponent) => {
       const media = {};
 
       Object.keys(queries).forEach((key) => {
-        const { matches } = matchMedia(queries[key], defaultValues);
+        const { matches } = matchMedia(queries[key], {});
         media[key] = matches;
       });
 
