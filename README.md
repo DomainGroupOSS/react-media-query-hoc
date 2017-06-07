@@ -9,5 +9,5 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 
 # Thanks
 
-Big thanks to https://github.com/jxnblk/react-media-context/ which is simular but I wanted a simpler API & to also use `matchmedia` internally
+Big thanks to https://github.com/jxnblk/react-media-context/ which is simular but its not a HOC & I wanted a simpler API which also used `matchmedia` internally
 
