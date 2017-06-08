@@ -32,10 +32,24 @@ const App = (props) => {
 export default App;
 ```
 
-By providing no `queries` prop to the `MediaQueryProvider` component, it will default to these media queries:
-https://github.com/jooj123/react-media-query-hoc/blob/8d1a3860dc29462436ca9545a33904cb0d38afae/src/media-query-provider.js#L5
+By providing no `queries` prop to the `MediaQueryProvider` component, it will default to these [media queries](https://github.com/jooj123/react-media-query-hoc/blob/8d1a3860dc29462436ca9545a33904cb0d38afae/src/media-query-provider.js#L5)
 
-But you can provide different media queries for your use case.
+But you can provide different media queries for your use case using the `queries` prop, eg:
+
+```
+const App = (props) => {
+  const customQueries = {
+    verySmall: 'screen and (max-width: 300px)',
+    someOtherMediaQuery: 'screen and (min-width: 301px)',
+  }; 
+
+  return (
+    <MediaQueryProvider queries={customQueries}>
+      <TheRestOfMyApp />
+    </MediaQueryProvider>
+  );
+};
+```
 
 ### `withMedia`
 
@@ -74,4 +88,4 @@ Big thanks to the maintainers of these repos
 - https://github.com/jxnblk/react-media-context
 - https://github.com/contra/react-responsive
 
-Both libraries are a bit similar, but my original use case required the extra advantages listed in [Why use this?](#why-heading)
+Both libraries are a bit similar, but my original use case required the extra advantages listed in [Why use this?](#why-use-this)
