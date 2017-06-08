@@ -1,12 +1,14 @@
 # react-media-query-hoc
 A dead simple React Higher Order Component (HOC) that uses context for matching media queries
 
+
 ## Why use this?
 - A simple API which doesnt require you to put `MediaQuery` components all over your code base
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
-- Uses `matchmedia` for media queries for client and server
+- Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
 - Abstracted away React context which is experimental (and subject to change) 
+
 
 ## Usage
 
@@ -80,6 +82,22 @@ const MyComponent = ({ media, ...props}) => (
 export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
+
+
+## Testing Components
+
+Because the media queries and context are abstracted out you can easily test components with or without the `withMedia` HOC, just ensure you export your component base without the HOC as well, eg:
+
+```
+export const BaseMyComponent = MyComponent;
+export default withMedia(MyComponent);
+```
+
+Then in your React tests you can import like:
+```
+import { BaseMyComponent } from 'location_of_my_component';
+```
+And unit test the component without having to worry about context
 
 
 ## Thanks
