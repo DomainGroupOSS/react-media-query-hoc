@@ -20,7 +20,7 @@ This component will listen to media events you want to configure, it should be u
 
 **Usage:**
 
-```
+```javascript
 import { MediaQueryProvider } from 'react-media-query-hoc';
 
 const App = (props) => {
@@ -38,7 +38,7 @@ By providing no `queries` prop to the `MediaQueryProvider` component, it will de
 
 But you can provide different media queries for your use case using the `queries` prop, eg:
 
-```
+```javascript
 const App = (props) => {
   const customQueries = {
     verySmall: 'screen and (max-width: 300px)',
@@ -59,7 +59,7 @@ This is a HOC to provide media match props to your component.
 This abstracts away context so that if there is any changes to the API in the future its easier to upgrade (see: [React Context](https://facebook.github.io/react/docs/context.html))
 
 **Usage:**
-```
+```javascript
 import { withMedia } from 'react-media-query-hoc';
 
 const MyComponent = ({ media, ...props}) => (
@@ -88,13 +88,13 @@ export default withMedia(MyComponent);
 
 Because the media queries and context are abstracted out you can easily test components with or without the `withMedia` HOC, just ensure you export your component base without the HOC as well, eg:
 
-```
+```javascript
 export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
 Then in your React tests you can import like:
-```
+```javascript
 import { BaseMyComponent } from 'location_of_my_component';
 ```
 And unit test the component without having to worry about context
