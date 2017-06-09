@@ -9,6 +9,18 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
 - Abstracted away React context which is experimental (and subject to change) 
 
+## Install
+
+Via NPM:
+```bash
+npm install react-media-query-hoc
+```
+
+Via Yarn:
+```bash
+yarn add react-media-query-hoc
+```
+
 
 ## Usage
 
