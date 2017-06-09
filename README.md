@@ -11,12 +11,12 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 
 ## Install
 
-Via NPM:
+Via [NPM](https://docs.npmjs.com/):
 ```bash
 npm install react-media-query-hoc --save
 ```
 
-Via Yarn:
+Via [Yarn](https://yarnpkg.com/en/):
 ```bash
 yarn add react-media-query-hoc
 ```
