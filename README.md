@@ -13,7 +13,7 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 
 Via NPM:
 ```bash
-npm install react-media-query-hoc
+npm install react-media-query-hoc --save
 ```
 
 Via Yarn:
