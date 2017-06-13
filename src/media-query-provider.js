@@ -40,12 +40,11 @@ class MediaQueryProvider extends React.Component {
   }
 
   match() {
-    const media = {};
-
-    Object.keys(this.props.queries).forEach((key) => {
+    const media = Object.keys(this.props.queries).reduce((result, key) => {
       const { matches } = matchMedia(this.props.queries[key], {});
-      media[key] = matches;
-    });
+      result[key] = matches; // eslint-disable-line no-param-reassign
+      return result;
+    }, {});
 
     this.setState({ media });
   }
