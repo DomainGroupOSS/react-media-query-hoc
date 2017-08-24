@@ -79,14 +79,13 @@ var MediaQueryProvider = function (_React$Component) {
     value: function match() {
       var _this4 = this;
 
-      var media = {};
-
-      Object.keys(this.props.queries).forEach(function (key) {
+      var media = Object.keys(this.props.queries).reduce(function (result, key) {
         var _matchMedia = (0, _matchmedia2.default)(_this4.props.queries[key], {}),
             matches = _matchMedia.matches;
 
-        media[key] = matches;
-      });
+        result[key] = matches; // eslint-disable-line no-param-reassign
+        return result;
+      }, {});
 
       this.setState({ media: media });
     }
