@@ -1,6 +1,7 @@
 import React from 'react';
 import matchMedia from 'matchmedia';
 import PropTypes from 'prop-types';
+import shallowequal from 'shallowequal';
 
 const defaultQueries = {
   mobile: 'screen and (max-width: 623px)',
@@ -31,6 +32,11 @@ class MediaQueryProvider extends React.Component {
     Object.keys(this.props.queries).forEach((key) => {
       matchMedia(this.props.queries[key], {}).addListener(this.match);
     });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !shallowequal(this.props, nextProps)
+      || !shallowequal(this.state, nextState);
   }
 
   componentWillUnmount() {
