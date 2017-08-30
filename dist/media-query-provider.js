@@ -43,8 +43,6 @@ var MediaQueryProvider = function (_React$Component) {
 
     _initialiseProps.call(_this);
 
-    console.log('Stuff: ', _this.queryMedia(props));
-
     _this.state = {
       media: _this.queryMedia(props)
     };
