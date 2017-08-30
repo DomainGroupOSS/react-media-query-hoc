@@ -83,8 +83,6 @@ describe('<MediaQueryProvider />', () => {
 
     it('should include mobile in the media context', () => {
       const { media } = mobileComponent.node.getChildContext();
-
-      console.log('Media: ', media);
       expect(media).toEqual({
         desktop: false,
         largeDesktop: false,
