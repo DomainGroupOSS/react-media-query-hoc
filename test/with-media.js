@@ -8,7 +8,6 @@ import withMedia from '../src/with-media';
 
 require('jsdom-global')();
 
-
 const TestComponent = ({ media }) => {
   if (media.mobile) {
     return (

@@ -7,7 +7,7 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
 - Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
-- Abstracted away React context which is experimental (and subject to change) 
+- Abstracted away React context which is experimental (and subject to change)
 
 ## Install
 
@@ -55,7 +55,7 @@ const App = (props) => {
   const customQueries = {
     verySmall: 'screen and (max-width: 300px)',
     someOtherMediaQuery: 'screen and (min-width: 301px)',
-  }; 
+  };
 
   return (
     <MediaQueryProvider queries={customQueries}>
@@ -76,14 +76,14 @@ import { withMedia } from 'react-media-query-hoc';
 
 const MyComponent = ({ media, ...props}) => (
   if(media.tablet || media.mobile) {
-    .. 
+    ..
     return (
       <div>
         Mobile and Tablet View
       </div>
     )
   }
-  
+
   return (
     <div>
       Other View
@@ -95,6 +95,26 @@ export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
+### Server Side Rendering
+
+You can pass in media features from your server, all supported values can be found here:
+https://www.w3.org/TR/css3-mediaqueries/#media1
+
+**Usage (matches mobile screen during SSR):**
+```javascript
+const App = (props) => {
+  const values = {
+    width: 300,
+    type: 'screen',
+  };
+
+  return (
+    <MediaQueryProvider values={values}>
+      <TheRestOfMyApp />
+    </MediaQueryProvider>
+  );
+};
+```
 
 ## Testing Components
 

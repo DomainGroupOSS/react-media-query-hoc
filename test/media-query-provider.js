@@ -83,10 +83,39 @@ describe('<MediaQueryProvider />', () => {
 
     it('should include mobile in the media context', () => {
       const { media } = mobileComponent.node.getChildContext();
+
+      console.log('Media: ', media);
       expect(media).toEqual({
         desktop: false,
         largeDesktop: false,
         mobile: false,
+        tablet: false,
+      });
+    });
+  });
+
+  describe('when specified device width matches mobile screen', () => {
+    let componentWithValues;
+
+    before(() => {
+      const values = {
+        width: 300,
+        type: 'screen',
+      };
+
+      componentWithValues = mount(
+        <MediaQueryProvider values={values}>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
+    });
+
+    it('should include mobile in the media context', () => {
+      const { media } = componentWithValues.node.getChildContext();
+      expect(media).toEqual({
+        desktop: false,
+        largeDesktop: false,
+        mobile: true,
         tablet: false,
       });
     });

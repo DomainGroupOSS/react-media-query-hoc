@@ -36,16 +36,18 @@ var defaultQueries = {
 var MediaQueryProvider = function (_React$Component) {
   _inherits(MediaQueryProvider, _React$Component);
 
-  function MediaQueryProvider() {
+  function MediaQueryProvider(props) {
     _classCallCheck(this, MediaQueryProvider);
 
-    var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this));
+    var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
+
+    _initialiseProps.call(_this);
+
+    console.log('Stuff: ', _this.queryMedia(props));
 
     _this.state = {
-      media: {}
+      media: _this.queryMedia(props)
     };
-
-    _this.match = _this.match.bind(_this);
     return _this;
   }
 
@@ -62,7 +64,7 @@ var MediaQueryProvider = function (_React$Component) {
       this.match();
 
       Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this2.props.queries[key], {}).addListener(_this2.match);
+        (0, _matchmedia2.default)(_this2.props.queries[key], _this2.props.values).addListener(_this2.match);
       });
     }
   }, {
@@ -71,24 +73,8 @@ var MediaQueryProvider = function (_React$Component) {
       var _this3 = this;
 
       Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this3.props.queries[key], {}).removeListener(_this3.match);
+        (0, _matchmedia2.default)(_this3.props.queries[key], _this3.props.values).removeListener(_this3.match);
       });
-    }
-  }, {
-    key: 'match',
-    value: function match() {
-      var _this4 = this;
-
-      var media = {};
-
-      Object.keys(this.props.queries).forEach(function (key) {
-        var _matchMedia = (0, _matchmedia2.default)(_this4.props.queries[key], {}),
-            matches = _matchMedia.matches;
-
-        media[key] = matches;
-      });
-
-      this.setState({ media: media });
     }
   }, {
     key: 'render',
@@ -104,17 +90,38 @@ var MediaQueryProvider = function (_React$Component) {
   return MediaQueryProvider;
 }(_react2.default.Component);
 
+var _initialiseProps = function _initialiseProps() {
+  var _this4 = this;
+
+  this.queryMedia = function (props) {
+    return Object.keys(props.queries).reduce(function (result, key) {
+      var _matchMedia = (0, _matchmedia2.default)(props.queries[key], props.values),
+          matches = _matchMedia.matches;
+
+      result[key] = matches; // eslint-disable-line no-param-reassign
+      return result;
+    }, {});
+  };
+
+  this.match = function () {
+    var media = _this4.queryMedia(_this4.props);
+    _this4.setState({ media: media });
+  };
+};
+
 MediaQueryProvider.childContextTypes = {
   media: _propTypes2.default.object
 };
 
 MediaQueryProvider.propTypes = {
   queries: _propTypes2.default.object, // eslint-disable-line react/forbid-prop-types
-  children: _propTypes2.default.node.isRequired
+  children: _propTypes2.default.node.isRequired,
+  values: _propTypes2.default.object // eslint-disable-line react/forbid-prop-types
 };
 
 MediaQueryProvider.defaultProps = {
-  queries: defaultQueries
+  queries: defaultQueries,
+  values: {}
 };
 
 exports.default = MediaQueryProvider;
