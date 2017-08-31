@@ -3,30 +3,10 @@
 import React from 'react';
 import expect from 'expect';
 import { mount } from 'enzyme';
-import PropTypes from 'prop-types';
 import withMedia from '../src/with-media';
+import TestComponent from './utils/test-component';
 
 require('jsdom-global')();
-
-const TestComponent = ({ media }) => {
-  if (media.mobile) {
-    return (
-      <div>
-        Mobile!
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      Other!
-    </div>
-  );
-};
-
-TestComponent.propTypes = {
-  media: PropTypes.object.isRequired,
-};
 
 const testContext = {
   context: {
