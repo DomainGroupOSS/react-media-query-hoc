@@ -11,14 +11,12 @@ const defaultQueries = {
 
 class MediaQueryProvider extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      media: {},
+      media: this.queryMedia(props),
     };
-
-    this.match = this.match.bind(this);
   }
 
   getChildContext() {
@@ -29,23 +27,26 @@ class MediaQueryProvider extends React.Component {
     this.match();
 
     Object.keys(this.props.queries).forEach((key) => {
-      matchMedia(this.props.queries[key], {}).addListener(this.match);
+      matchMedia(this.props.queries[key], this.props.values).addListener(this.match);
     });
   }
 
   componentWillUnmount() {
     Object.keys(this.props.queries).forEach((key) => {
-      matchMedia(this.props.queries[key], {}).removeListener(this.match);
+      matchMedia(this.props.queries[key], this.props.values).removeListener(this.match);
     });
   }
 
-  match() {
-    const media = Object.keys(this.props.queries).reduce((result, key) => {
-      const { matches } = matchMedia(this.props.queries[key], {});
+  queryMedia = (props) => {
+    return Object.keys(props.queries).reduce((result, key) => {
+      const { matches } = matchMedia(props.queries[key], props.values);
       result[key] = matches; // eslint-disable-line no-param-reassign
       return result;
     }, {});
+  }
 
+  match = () => {
+    const media = this.queryMedia(this.props);
     this.setState({ media });
   }
 
@@ -65,10 +66,12 @@ MediaQueryProvider.childContextTypes = {
 MediaQueryProvider.propTypes = {
   queries: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   children: PropTypes.node.isRequired,
+  values: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 MediaQueryProvider.defaultProps = {
   queries: defaultQueries,
+  values: {},
 };
 
 export default MediaQueryProvider;

@@ -92,6 +92,33 @@ describe('<MediaQueryProvider />', () => {
     });
   });
 
+  describe('when specified device width matches mobile screen', () => {
+    let componentWithValues;
+
+    before(() => {
+      const values = {
+        width: 300,
+        type: 'screen',
+      };
+
+      componentWithValues = mount(
+        <MediaQueryProvider values={values}>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
+    });
+
+    it('should include mobile in the media context', () => {
+      const { media } = componentWithValues.node.getChildContext();
+      expect(media).toEqual({
+        desktop: false,
+        largeDesktop: false,
+        mobile: true,
+        tablet: false,
+      });
+    });
+  });
+
   describe('when rendering server-side', () => {
     it('should render', () => {
       expect(() => {
