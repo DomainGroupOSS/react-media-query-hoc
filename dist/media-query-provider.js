@@ -53,8 +53,6 @@ var MediaQueryProvider = function (_React$Component) {
 
     _this.clientMatch = function () {
       var media = _this.queryMedia(_this.props.queries, {});
-
-      console.log('Setting Media: ', media);
       _this.setState({ media: media });
     };
 
@@ -67,15 +65,12 @@ var MediaQueryProvider = function (_React$Component) {
   _createClass(MediaQueryProvider, [{
     key: 'getChildContext',
     value: function getChildContext() {
-      console.log('State: ', this.state);
       return this.state;
     }
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var _this2 = this;
-
-      console.log('Mounting');
 
       // even if we supplied values for SSR, they may not have matched up with client screen
       // so need to requery with client browser values
