@@ -41,10 +41,25 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    _initialiseProps.call(_this);
+    _this.queryMedia = function (queries, values) {
+      return Object.keys(queries).reduce(function (result, key) {
+        var _matchMedia = (0, _matchmedia2.default)(queries[key], values),
+            matches = _matchMedia.matches;
+
+        result[key] = matches; // eslint-disable-line no-param-reassign
+        return result;
+      }, {});
+    };
+
+    _this.clientMatch = function () {
+      var media = _this.queryMedia(_this.props.queries, {});
+
+      console.log('Setting Media: ', media);
+      _this.setState({ media: media });
+    };
 
     _this.state = {
-      media: _this.queryMedia(props)
+      media: _this.queryMedia(props.queries, props.values)
     };
     return _this;
   }
@@ -52,6 +67,7 @@ var MediaQueryProvider = function (_React$Component) {
   _createClass(MediaQueryProvider, [{
     key: 'getChildContext',
     value: function getChildContext() {
+      console.log('State: ', this.state);
       return this.state;
     }
   }, {
@@ -59,10 +75,14 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      this.match();
+      console.log('Mounting');
+
+      // even if we supplied values for SSR, they may not have matched up with client screen
+      // so need to requery with client browser values
+      this.clientMatch();
 
       Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this2.props.queries[key], _this2.props.values).addListener(_this2.match);
+        (0, _matchmedia2.default)(_this2.props.queries[key], _this2.props.values).addListener(_this2.clientMatch);
       });
     }
   }, {
@@ -71,9 +91,12 @@ var MediaQueryProvider = function (_React$Component) {
       var _this3 = this;
 
       Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this3.props.queries[key], _this3.props.values).removeListener(_this3.match);
+        (0, _matchmedia2.default)(_this3.props.queries[key], _this3.props.values).removeListener(_this3.clientMatch);
       });
     }
+
+    // check for matches on client mount
+
   }, {
     key: 'render',
     value: function render() {
@@ -87,25 +110,6 @@ var MediaQueryProvider = function (_React$Component) {
 
   return MediaQueryProvider;
 }(_react2.default.Component);
-
-var _initialiseProps = function _initialiseProps() {
-  var _this4 = this;
-
-  this.queryMedia = function (props) {
-    return Object.keys(props.queries).reduce(function (result, key) {
-      var _matchMedia = (0, _matchmedia2.default)(props.queries[key], props.values),
-          matches = _matchMedia.matches;
-
-      result[key] = matches; // eslint-disable-line no-param-reassign
-      return result;
-    }, {});
-  };
-
-  this.match = function () {
-    var media = _this4.queryMedia(_this4.props);
-    _this4.setState({ media: media });
-  };
-};
 
 MediaQueryProvider.childContextTypes = {
   media: _propTypes2.default.object
