@@ -6,7 +6,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "mkdir -p dist && babel src --out-dir dist",
-    "test": "mocha test --compilers js:babel-register",
+    "test": "mocha test",
     "lint": "eslint ./src"
   },
   "keywords": [
@@ -42,20 +42,21 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.9.0",
+    "chai": "^4.1.2",
     "enzyme": "^2.3.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
-    "expect": "^1.20.1",
     "jsdom": "^11.0.0",
-    "jsdom-global": "^3.0.2",
+    "match-media-mock": "^0.1.0",
     "mocha": "^2.5.3",
+    "proxyquire": "^1.8.0",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.1.0",
     "react-dom": "^15.1.0",
-    "sinon": "^2.3.2"
+    "sinon": "^3.2.1"
   },
   "dependencies": {
     "hoist-non-react-statics": "^1.2.0",

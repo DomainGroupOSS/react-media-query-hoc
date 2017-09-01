@@ -13,9 +13,8 @@ class MediaQueryProvider extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
-      media: this.queryMedia(props),
+      media: this.queryMedia(props.queries, props.values),
     };
   }
 
@@ -24,29 +23,32 @@ class MediaQueryProvider extends React.Component {
   }
 
   componentDidMount() {
-    this.match();
+    // even if we supplied values for SSR, they may not have matched up with client screen
+    // so need to requery with client browser values
+    this.clientMatch();
 
     Object.keys(this.props.queries).forEach((key) => {
-      matchMedia(this.props.queries[key], this.props.values).addListener(this.match);
+      matchMedia(this.props.queries[key], this.props.values).addListener(this.clientMatch);
     });
   }
 
   componentWillUnmount() {
     Object.keys(this.props.queries).forEach((key) => {
-      matchMedia(this.props.queries[key], this.props.values).removeListener(this.match);
+      matchMedia(this.props.queries[key], this.props.values).removeListener(this.clientMatch);
     });
   }
 
-  queryMedia = (props) => {
-    return Object.keys(props.queries).reduce((result, key) => {
-      const { matches } = matchMedia(props.queries[key], props.values);
+  queryMedia = (queries, values) => {
+    return Object.keys(queries).reduce((result, key) => {
+      const { matches } = matchMedia(queries[key], values);
       result[key] = matches; // eslint-disable-line no-param-reassign
       return result;
     }, {});
   }
 
-  match = () => {
-    const media = this.queryMedia(this.props);
+  // check for matches on client mount
+  clientMatch = () => {
+    const media = this.queryMedia(this.props.queries, {});
     this.setState({ media });
   }
 
