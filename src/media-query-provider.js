@@ -13,7 +13,6 @@ class MediaQueryProvider extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       media: this.queryMedia(props.queries, props.values),
     };

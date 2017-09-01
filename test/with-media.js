@@ -1,12 +1,10 @@
 /* eslint-disable */
 
 import React from 'react';
-import expect from 'expect';
+import { expect } from 'chai';
 import { mount } from 'enzyme';
 import withMedia from '../src/with-media';
 import TestComponent from './utils/test-component';
-
-require('jsdom-global')();
 
 const testContext = {
   context: {
@@ -23,12 +21,12 @@ describe('<withMedia />', () => {
   it('should render with HOC', () => {
     expect(() => {
       component = mount(<TestComponentWithMedia />, testContext);
-    }).toNotThrow();
+    }).to.not.throw();
   });
 
   it('should render mobile view', () => {
     component = mount(<TestComponentWithMedia />, testContext);
-    expect(component.text()).toEqual('Mobile!');
+    expect(component.text()).to.equal('Mobile!');
   });
 
   it('should render other view', () => {
@@ -41,6 +39,6 @@ describe('<withMedia />', () => {
     };
 
     component = mount(<TestComponentWithMedia />, otherContext);
-    expect(component.text()).toEqual('Other!');
+    expect(component.text()).to.equal('Other!');
   });
 });
