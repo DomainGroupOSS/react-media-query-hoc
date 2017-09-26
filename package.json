@@ -20,6 +20,14 @@
   ],
   "author": "Martin Jujou",
   "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url": "git+ssh://git@github.com/DomainGroupOSS/react-media-query-hoc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DomainGroupOSS/react-media-query-hoc/issues"
+  },
+  "homepage": "https://github.com/DomainGroupOSS/react-media-query-hoc#readme",
   "eslintConfig": {
     "extends": "airbnb",
     "rules": {
