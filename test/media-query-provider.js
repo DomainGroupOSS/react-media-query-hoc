@@ -68,7 +68,7 @@ describe('<MediaQueryProvider />', () => {
     });
   });
 
-  describe('when mobile matches', () => {
+  context('when mobile matches', () => {
     let mobileComponent;
 
     before(() => {
@@ -120,7 +120,7 @@ describe('<MediaQueryProvider />', () => {
     stub.restore();
   });
 
-  describe('when rendering server-side', () => {
+  context('when rendering server-side', () => {
     it('should render', () => {
       expect(() => {
         const html = ReactDOMServer.renderToString(

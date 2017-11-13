@@ -32,7 +32,7 @@ describe('Integration Tests', () => {
     stub.restore();
   });
 
-  it('should render not render mobile view after client / server mismatch', () => {
+  it('should not render mobile view after client / server mismatch', () => {
     const values = {
       width: 300,
       type: 'screen',

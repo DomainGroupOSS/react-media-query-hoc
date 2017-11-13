@@ -1,6 +1,7 @@
 import React from 'react';
 import matchMedia from 'matchmedia';
 import PropTypes from 'prop-types';
+import shallowequal from 'shallowequal';
 
 const defaultQueries = {
   mobile: 'screen and (max-width: 623px)',
@@ -49,7 +50,11 @@ class MediaQueryProvider extends React.Component {
   // check for matches on client mount
   clientMatch = () => {
     const media = this.queryMedia(this.props.queries, {});
-    this.setState({ media });
+
+    // no need to set state when it hasnt changed
+    if (!shallowequal(media, this.media)) {
+      this.setState({ media });
+    }
   }
 
   render() {
