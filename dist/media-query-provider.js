@@ -18,6 +18,10 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _shallowequal = require('shallowequal');
+
+var _shallowequal2 = _interopRequireDefault(_shallowequal);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -53,7 +57,11 @@ var MediaQueryProvider = function (_React$Component) {
 
     _this.clientMatch = function () {
       var media = _this.queryMedia(_this.props.queries, {});
-      _this.setState({ media: media });
+
+      // no need to set state when it hasnt changed
+      if (!(0, _shallowequal2.default)(media, _this.media)) {
+        _this.setState({ media: media });
+      }
     };
 
     _this.state = {
