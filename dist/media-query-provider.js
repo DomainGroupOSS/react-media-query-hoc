@@ -59,7 +59,7 @@ var MediaQueryProvider = function (_React$Component) {
       var media = _this.queryMedia(_this.props.queries, {});
 
       // no need to set state when it hasnt changed
-      if (!(0, _shallowequal2.default)(media, _this.media)) {
+      if (!(0, _shallowequal2.default)(media, _this.state.media)) {
         _this.setState({ media: media });
       }
     };
