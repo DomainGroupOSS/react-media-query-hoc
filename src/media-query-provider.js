@@ -52,7 +52,7 @@ class MediaQueryProvider extends React.Component {
     const media = this.queryMedia(this.props.queries, {});
 
     // no need to set state when it hasnt changed
-    if (!shallowequal(media, this.media)) {
+    if (!shallowequal(media, this.state.media)) {
       this.setState({ media });
     }
   }
