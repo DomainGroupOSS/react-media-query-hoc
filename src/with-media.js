@@ -9,11 +9,13 @@ function getDisplayName(WrappedComponent) {
 const withMedia = (WrappedComponent) => {
   class MediaQueryWrapper extends React.Component {
     render() {
+      const { wrappedRef, ...otherProps } = this.props;
       return (
         <WrappedComponent
-          {...this.props}
+          {...otherProps}
           {...this.state}
           media={this.context.media}
+          ref={wrappedRef}
         />
       );
     }
@@ -21,6 +23,14 @@ const withMedia = (WrappedComponent) => {
 
   MediaQueryWrapper.contextTypes = {
     media: PropTypes.object,
+  };
+
+  MediaQueryWrapper.propTypes = {
+    wrappedRef: PropTypes.func,
+  };
+
+  MediaQueryWrapper.defaultProps = {
+    wrappedRef: () => {},
   };
 
   MediaQueryWrapper.displayName = `MediaQuery(${getDisplayName(WrappedComponent)})`;

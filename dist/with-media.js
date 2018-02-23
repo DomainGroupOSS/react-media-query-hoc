@@ -22,6 +22,8 @@ var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -45,8 +47,13 @@ var withMedia = function withMedia(WrappedComponent) {
     _createClass(MediaQueryWrapper, [{
       key: 'render',
       value: function render() {
-        return _react2.default.createElement(WrappedComponent, _extends({}, this.props, this.state, {
-          media: this.context.media
+        var _props = this.props,
+            wrappedRef = _props.wrappedRef,
+            otherProps = _objectWithoutProperties(_props, ['wrappedRef']);
+
+        return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, this.state, {
+          media: this.context.media,
+          ref: wrappedRef
         }));
       }
     }]);
@@ -56,6 +63,14 @@ var withMedia = function withMedia(WrappedComponent) {
 
   MediaQueryWrapper.contextTypes = {
     media: _propTypes2.default.object
+  };
+
+  MediaQueryWrapper.propTypes = {
+    wrappedRef: _propTypes2.default.func
+  };
+
+  MediaQueryWrapper.defaultProps = {
+    wrappedRef: function wrappedRef() {}
   };
 
   MediaQueryWrapper.displayName = 'MediaQuery(' + getDisplayName(WrappedComponent) + ')';

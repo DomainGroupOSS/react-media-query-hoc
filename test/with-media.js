@@ -41,4 +41,10 @@ describe('<withMedia />', () => {
     component = mount(<TestComponentWithMedia />, otherContext);
     expect(component.text()).to.equal('Other!');
   });
+
+  it('should provide a ref for the wrapped component', () => {
+    let receivedRef = false;
+    component = mount(<TestComponentWithMedia wrappedRef={(ref) => { receivedRef = true; }}/>, testContext);
+    expect(receivedRef).to.not.equal(false);
+  });
 });
