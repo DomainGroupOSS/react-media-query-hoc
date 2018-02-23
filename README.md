@@ -95,6 +95,8 @@ export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
+Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function.
+
 ### Server Side Rendering
 
 You can pass in media features from your server, all supported values can be found here:
