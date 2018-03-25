@@ -131,4 +131,29 @@ describe('<MediaQueryProvider />', () => {
       }).to.not.throw();
     });
   });
+
+  if (React.Fragment) {
+    context('when React.Fragment is available', () => {
+      it('should render a div', () => {
+        const component = mount(
+          <MediaQueryProvider>
+            <p>Test123</p>
+          </MediaQueryProvider>,
+        );
+        expect(component.find('div').is('div')).to.eql(false);
+        expect(component.find('p').is('p')).to.eql(true);
+      });
+    });
+  } else {
+    context('when React.Fragment is not available', () => {
+      it('should render a div', () => {
+        const component = mount(
+          <MediaQueryProvider>
+            <p>Test123</p>
+          </MediaQueryProvider>,
+        );
+        expect(component.find('div').is('div')).to.eql(true);
+      });
+    });
+  }
 });
