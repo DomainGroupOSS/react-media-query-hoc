@@ -131,4 +131,51 @@ describe('<MediaQueryProvider />', () => {
       }).to.not.throw();
     });
   });
+
+  context('when React.Fragment is available', () => {
+    before(() => {
+      Object.defineProperty(React, 'Fragment', {
+        configurable: true,
+        value: React.createClass({
+          render: function() {
+            return React.createElement(
+              'span',
+              {className: 'wrapper'},
+              Array.isArray(this.props.children) ? 
+                this.props.children.map((el) => <span>{el}</span>) :
+                this.props.children
+            );
+          }
+        }),
+      });
+    });
+
+    after(() => {
+      Reflect.deleteProperty(React, 'Fragment');
+    });
+
+    it('should use React.Fragment component', () => {
+      const fragmentChildren = [
+        <p>Test123</p>,
+        <p>Test123</p>,
+      ];
+      const component = mount(
+        <MediaQueryProvider>
+          <fragmentChildren />
+        </MediaQueryProvider>,
+      );
+      expect(component.find('span').is('span')).to.eql(true);
+    });
+  });
+
+  context('when React.Fragment is not available', () => {
+    it('should render a div', () => {
+      const component = mount(
+        <MediaQueryProvider>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
+      expect(component.find('div').is('div')).to.eql(true);
+    });
+  });
 });

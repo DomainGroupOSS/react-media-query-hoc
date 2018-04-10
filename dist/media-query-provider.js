@@ -103,7 +103,11 @@ var MediaQueryProvider = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(
+      return _react2.default.Fragment ? _react2.default.createElement(
+        _react2.default.Fragment,
+        null,
+        this.props.children
+      ) : _react2.default.createElement(
         'div',
         null,
         this.props.children

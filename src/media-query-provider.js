@@ -58,10 +58,10 @@ class MediaQueryProvider extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        { this.props.children }
-      </div>
+    return React.Fragment ? (
+      <React.Fragment>{this.props.children}</React.Fragment>
+    ) : (
+      <div>{this.props.children}</div>
     );
   }
 }
