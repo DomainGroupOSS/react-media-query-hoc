@@ -7,7 +7,7 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
 - Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
-- Abstracted away React context which is experimental (and subject to change)
+- Abstracted away React context which is experimental (and subject to change for <= React 15)
 
 ## Install
 
