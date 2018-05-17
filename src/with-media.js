@@ -33,7 +33,7 @@ const withMedia = (WrappedComponent) => {
     wrappedRef: () => {},
   };
 
-  MediaQueryWrapper.displayName = `MediaQuery(${getDisplayName(WrappedComponent)})`;
+  MediaQueryWrapper.displayName = `withMedia(${getDisplayName(WrappedComponent)})`;
   return hoistNonReactStatics(MediaQueryWrapper, WrappedComponent);
 };
 
