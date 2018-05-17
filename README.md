@@ -1,13 +1,12 @@
 # react-media-query-hoc
-A dead simple React Higher Order Component (HOC) that uses context for matching media queries
+A dead simple React Higher Order Component (HOC) that uses context for matching media queries.
 
 
 ## Why use this?
 - A simple API which doesnt require you to put `MediaQuery` components all over your code base
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
-- Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
-- Abstracted away React context which is experimental (and subject to change for <= React 15)
+- Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) for server side rendering
 
 ## Why not use this?
 We always recommend using vanilla CSS media queries to build responsive websites, this is simpler and provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). At Domain we needed to use this component for legacy ad tech and advise against it's use for general responsive website design.
@@ -31,7 +30,7 @@ This library is designed so that you have 1 `MediaQueryProvider` parent and 1-ma
 
 ### `MediaQueryProvider`
 
-This component will listen to media events you want to configure, it should be used once as a parent component
+This component will listen to media events you want to configure, it should be used once as a parent component.
 
 **Usage:**
 
@@ -71,7 +70,6 @@ const App = (props) => {
 ### `withMedia`
 
 This is a HOC to provide media match props to your component.
-This abstracts away context so that if there is any changes to the API in the future its easier to upgrade (see: [React Context](https://facebook.github.io/react/docs/context.html))
 
 **Usage:**
 ```javascript

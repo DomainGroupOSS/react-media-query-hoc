@@ -8,15 +8,11 @@ const TestComponent = ({ media }) => {
     data = 'Mobile!';
   }
 
-  return (
-    <div className="test-component">
-      {data}
-    </div>
-  );
+  return <div className="test-component">{data}</div>;
 };
 
 TestComponent.propTypes = {
-  media: PropTypes.object.isRequired,
+  media: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 export default TestComponent;

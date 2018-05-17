@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "mkdir -p dist && babel src --out-dir dist",
-    "test": "mocha test",
-    "lint": "eslint ./src"
+    "build": "NODE_ENV=production babel --out-dir dist srcy",
+    "test": "NODE_ENV=test mocha test",
+    "tdd": "NODE_ENV=test mocha --watch test",
+    "lint": "eslint ."
   },
   "keywords": [
     "react",
@@ -28,48 +29,45 @@
     "url": "https://github.com/DomainGroupOSS/react-media-query-hoc/issues"
   },
   "homepage": "https://github.com/DomainGroupOSS/react-media-query-hoc#readme",
-  "eslintConfig": {
-    "extends": "airbnb",
-    "rules": {
-      "react/jsx-filename-extension": "off"
-    }
-  },
   "babel": {
     "presets": [
-      "es2015",
-      "stage-0",
-      "react"
+      "react-app"
+    ],
+    "plugins": [
+      "transform-es2015-modules-commonjs"
     ]
   },
   "peerDependencies": {
-    "react": "^15.1.0"
+    "react": "^15.1.0 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.5.0",
-    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-react-app": "^3.1.1",
     "babel-register": "^6.9.0",
     "chai": "^4.1.2",
     "enzyme": "^2.3.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react": "^7.0.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.8.2",
     "jsdom": "^11.0.0",
     "match-media-mock": "^0.1.0",
     "mocha": "^2.5.3",
-    "proxyquire": "^1.8.0",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.1.0",
     "react-dom": "^15.1.0",
-    "sinon": "^3.2.1"
+    "sinon": "^5.0.7"
   },
   "dependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "css-mediaquery": "^0.1.2",
     "hoist-non-react-statics": "^1.2.0",
-    "matchmedia": "^0.1.2",
     "prop-types": "^15.5.10",
     "shallowequal": "^1.0.2"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "IE 10"
+  ]
 }

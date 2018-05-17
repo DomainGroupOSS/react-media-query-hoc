@@ -1,11 +1,10 @@
-/* eslint-disable */
-
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
-import MediaQueryProvider from '../src/media-query-provider';
 import sinon from 'sinon';
+import matchMediaMock from 'match-media-mock';
+import MediaQueryProvider from '../src/media-query-provider';
 
 describe('<MediaQueryProvider />', () => {
   let component;
@@ -16,20 +15,20 @@ describe('<MediaQueryProvider />', () => {
       configurable: true,
       value: () => {},
     });
+
+    const matchMediaMockInstance = matchMediaMock.create();
+    matchMediaMockInstance.setConfig({ type: 'screen', width: 1200 });
+    window.matchMedia = matchMediaMockInstance;
   });
 
   after(() => {
     Reflect.deleteProperty(global, 'HTMLElement');
+    delete window.matchMedia;
   });
-
 
   it('should render app', () => {
     expect(() => {
-      component = mount(
-        <MediaQueryProvider>
-          <p>Test123</p>
-        </MediaQueryProvider>,
-      );
+      component = mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
     }).to.not.throw();
   });
 
@@ -39,7 +38,7 @@ describe('<MediaQueryProvider />', () => {
 
   it('should have child context with default media', () => {
     expect(component.node.getChildContext().media).to.eql({
-      desktop: false,
+      desktop: true,
       largeDesktop: false,
       mobile: false,
       tablet: false,
@@ -54,11 +53,8 @@ describe('<MediaQueryProvider />', () => {
       someMediaQuery4: 'screen and (min-width: 66666px)',
     };
 
-    const otherComponent = mount(
-      <MediaQueryProvider queries={queries}>
-        <p>Test123</p>
-      </MediaQueryProvider>,
-    );
+    const otherComponent =
+      mount(<MediaQueryProvider queries={queries}><p>Test123</p></MediaQueryProvider>);
 
     expect(otherComponent.node.getChildContext().media).to.eql({
       someMediaQuery: false,
@@ -72,17 +68,13 @@ describe('<MediaQueryProvider />', () => {
     let mobileComponent;
 
     before(() => {
-      mobileComponent = mount(
-        <MediaQueryProvider>
-          <p>Test123</p>
-        </MediaQueryProvider>,
-      );
+      mobileComponent = mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
     });
 
     it('should include mobile in the media context', () => {
       const { media } = mobileComponent.node.getChildContext();
       expect(media).to.eql({
-        desktop: false,
+        desktop: true,
         largeDesktop: false,
         mobile: false,
         tablet: false,
@@ -91,7 +83,6 @@ describe('<MediaQueryProvider />', () => {
   });
 
   it('should render mobile when value specified from server', () => {
-
     const values = {
       width: 300,
       type: 'screen',
@@ -100,11 +91,8 @@ describe('<MediaQueryProvider />', () => {
     // dont want to do client mount
     const stub = sinon.stub(MediaQueryProvider.prototype, 'componentDidMount').returns('hi!');
 
-    const componentWithValues = mount(
-      <MediaQueryProvider values={values}>
-        <p>Test123</p>
-      </MediaQueryProvider>,
-    );
+    const componentWithValues =
+      mount(<MediaQueryProvider values={values}><p>Test123</p></MediaQueryProvider>);
 
     expect(MediaQueryProvider.prototype.componentDidMount).to.have.property('callCount', 1);
 
@@ -123,11 +111,7 @@ describe('<MediaQueryProvider />', () => {
   context('when rendering server-side', () => {
     it('should render', () => {
       expect(() => {
-        const html = ReactDOMServer.renderToString(
-          <MediaQueryProvider>
-            <p>Test123</p>
-          </MediaQueryProvider>,
-        );
+        ReactDOMServer.renderToString(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
       }).to.not.throw();
     });
   });
@@ -137,15 +121,15 @@ describe('<MediaQueryProvider />', () => {
       Object.defineProperty(React, 'Fragment', {
         configurable: true,
         value: React.createClass({
-          render: function() {
+          render() {
             return React.createElement(
               'span',
-              {className: 'wrapper'},
-              Array.isArray(this.props.children) ? 
-                this.props.children.map((el) => <span>{el}</span>) :
-                this.props.children
+              { className: 'wrapper' },
+              Array.isArray(this.props.children)
+                ? this.props.children.map(el => <span>{el}</span>)
+                : this.props.children,
             );
-          }
+          },
         }),
       });
     });
@@ -155,27 +139,24 @@ describe('<MediaQueryProvider />', () => {
     });
 
     it('should use React.Fragment component', () => {
-      const fragmentChildren = [
-        <p>Test123</p>,
-        <p>Test123</p>,
-      ];
-      const component = mount(
-        <MediaQueryProvider>
-          <fragmentChildren />
-        </MediaQueryProvider>,
-      );
-      expect(component.find('span').is('span')).to.eql(true);
+      const fragmentChildren = [<p>Test123</p>, <p>Test123</p>];
+      const componentWithFrag =
+        mount(<MediaQueryProvider><fragmentChildren /></MediaQueryProvider>);
+      expect(componentWithFrag.find('span').is('span')).to.eql(true);
     });
   });
 
-  context('when React.Fragment is not available', () => {
-    it('should render a div', () => {
-      const component = mount(
-        <MediaQueryProvider>
-          <p>Test123</p>
-        </MediaQueryProvider>,
-      );
-      expect(component.find('div').is('div')).to.eql(true);
+  describe('rendering children', () => {
+    it('when React.Fragment is not available and multiple children are provided we wrap in a div', () => {
+      const testComponent =
+        mount(<MediaQueryProvider><p>Test123</p><p>Test123</p></MediaQueryProvider>);
+      expect(testComponent.find('div').is('div')).to.eql(true);
+    });
+
+    it('renders no div when we have one child', () => {
+      const testComponent =
+        mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+      expect(testComponent.find('div').exists()).to.equal(false);
     });
   });
 });
