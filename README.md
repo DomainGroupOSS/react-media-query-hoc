@@ -9,6 +9,9 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
 - Abstracted away React context which is experimental (and subject to change for <= React 15)
 
+## Why not use this?
+We always recommend using vanilla CSS media queries to build responsive websites, this is simpler and provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). At Domain we needed to use this component for legacy ad tech and advise against it's use for general responsive website design.
+
 ## Install
 
 Via [NPM](https://docs.npmjs.com/):
@@ -117,6 +120,14 @@ const App = (props) => {
   );
 };
 ```
+
+#### React 16 ReactDOM.hydrate
+
+It's very important to realise a server client mismatch is a dangerous bug in React 16, ReactDOM.hydrate can cause very [strange](https://github.com/Tarnadas/react16-ssr-bug) html on the client if there is a mismatch. To mitigate this we use
+the two-pass rendering technique mention in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate). We render
+on the client in the first pass using the `values` used on the server, then we use the browsers native `matchMedia`
+to get it's actual dimensions and render again if it causes different query results. This means there should be no React
+server/client mismatch warning in your console and you can safely use hydrate.
 
 ## Testing Components
 
