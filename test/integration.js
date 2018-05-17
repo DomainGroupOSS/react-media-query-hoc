@@ -43,7 +43,11 @@ describe('Integration Tests', () => {
 
     const TestComponentWithMedia = withMedia(TestComponent);
     const component =
-      mount(<MediaQueryProvider values={values}><TestComponentWithMedia /></MediaQueryProvider>);
+      mount(
+        <MediaQueryProvider values={values}>
+          <TestComponentWithMedia />
+        </MediaQueryProvider>,
+      );
 
     expect(component.find('.test-component').text()).to.equal('Other!');
   });

@@ -50,6 +50,6 @@ describe('<withMedia />', () => {
       />,
       testContext,
     );
-    expect(receivedRef).to.not.equal(false);
+    expect(receivedRef).to.equal(true);
   });
 });

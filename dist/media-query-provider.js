@@ -153,14 +153,14 @@ var MediaQueryProvider = function (_React$Component) {
       }
 
       if (_react2.default.Children.count(this.props.children) > 1) {
-        return this.props.children;
+        return _react2.default.createElement(
+          'div',
+          null,
+          this.props.children
+        );
       }
 
-      return _react2.default.createElement(
-        'div',
-        null,
-        this.props.children
-      );
+      return this.props.children;
     }
   }]);
 

@@ -37,7 +37,7 @@ describe('<MediaQueryProvider />', () => {
   });
 
   it('should have child context with default media', () => {
-    expect(component.node.getChildContext().media).to.eql({
+    expect(component.instance().getChildContext().media).to.eql({
       desktop: true,
       largeDesktop: false,
       mobile: false,
@@ -56,7 +56,7 @@ describe('<MediaQueryProvider />', () => {
     const otherComponent =
       mount(<MediaQueryProvider queries={queries}><p>Test123</p></MediaQueryProvider>);
 
-    expect(otherComponent.node.getChildContext().media).to.eql({
+    expect(otherComponent.instance().getChildContext().media).to.eql({
       someMediaQuery: false,
       someMediaQuery2: false,
       someMediaQuery3: false,
@@ -72,7 +72,7 @@ describe('<MediaQueryProvider />', () => {
     });
 
     it('should include mobile in the media context', () => {
-      const { media } = mobileComponent.node.getChildContext();
+      const { media } = mobileComponent.instance().getChildContext();
       expect(media).to.eql({
         desktop: true,
         largeDesktop: false,
@@ -96,7 +96,7 @@ describe('<MediaQueryProvider />', () => {
 
     expect(MediaQueryProvider.prototype.componentDidMount).to.have.property('callCount', 1);
 
-    const { media } = componentWithValues.node.getChildContext();
+    const { media } = componentWithValues.instance().getChildContext();
 
     expect(media).to.eql({
       mobile: true,
@@ -116,47 +116,36 @@ describe('<MediaQueryProvider />', () => {
     });
   });
 
-  context('when React.Fragment is available', () => {
-    before(() => {
-      Object.defineProperty(React, 'Fragment', {
-        configurable: true,
-        value: React.createClass({
-          render() {
-            return React.createElement(
-              'span',
-              { className: 'wrapper' },
-              Array.isArray(this.props.children)
-                ? this.props.children.map(el => <span>{el}</span>)
-                : this.props.children,
-            );
-          },
-        }),
-      });
-    });
-
-    after(() => {
-      Reflect.deleteProperty(React, 'Fragment');
-    });
-
-    it('should use React.Fragment component', () => {
-      const fragmentChildren = [<p>Test123</p>, <p>Test123</p>];
-      const componentWithFrag =
-        mount(<MediaQueryProvider><fragmentChildren /></MediaQueryProvider>);
-      expect(componentWithFrag.find('span').is('span')).to.eql(true);
-    });
-  });
-
   describe('rendering children', () => {
-    it('when React.Fragment is not available and multiple children are provided we wrap in a div', () => {
+    it('when multiple children are provided we use React.Fragment', () => {
       const testComponent =
         mount(<MediaQueryProvider><p>Test123</p><p>Test123</p></MediaQueryProvider>);
-      expect(testComponent.find('div').is('div')).to.eql(true);
+      expect(testComponent.find('div').exists()).to.eql(false);
     });
 
-    it('renders no div when we have one child', () => {
-      const testComponent =
-        mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
-      expect(testComponent.find('div').exists()).to.equal(false);
+    describe('when React.Fragment is not available', () => {
+      let oldReactFragement;
+
+      before(() => {
+        oldReactFragement = React.Fragment;
+        Reflect.deleteProperty(React, 'Fragment');
+      });
+
+      after(() => {
+        React.Fragment = oldReactFragement;
+      });
+
+      it('when multiple children are provided we wrap in a div', () => {
+        const testComponent =
+          mount(<MediaQueryProvider><p>Test123</p><p>Test123</p></MediaQueryProvider>);
+        expect(testComponent.find('div').exists()).to.eql(true);
+      });
+
+      it('renders no div when we have one child', () => {
+        const testComponent =
+          mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+        expect(testComponent.find('div').exists()).to.equal(false);
+      });
     });
   });
 });

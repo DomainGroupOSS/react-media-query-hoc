@@ -96,7 +96,7 @@ export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
-Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function.
+Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function. Note this means the wrapped component can not be a [stateless function](https://github.com/facebook/react/issues/10831).
 
 ### Server Side Rendering
 
