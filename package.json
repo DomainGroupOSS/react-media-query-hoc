@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-preset-react-app": "^3.1.1",
     "babel-register": "^6.9.0",
     "chai": "^4.1.2",
@@ -61,14 +62,9 @@
     "sinon": "^5.0.7"
   },
   "dependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "css-mediaquery": "^0.1.2",
     "hoist-non-react-statics": "^2.5.0",
     "prop-types": "^15.5.10",
     "shallowequal": "^1.0.2"
-  },
-  "browserslist": [
-    "> 1%",
-    "IE 10"
-  ]
+  }
 }
