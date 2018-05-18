@@ -63,17 +63,7 @@ var MediaQueryProvider = function (_React$Component) {
       return acc;
     }, {});
 
-    // this is for the mediaQueryListener to be able to find the queryName from it's event arg
-    _this.reverseQueries = queryTuples.reduce(function (acc, _ref3) {
-      var _ref4 = _slicedToArray(_ref3, 2),
-          queryName = _ref4[0],
-          query = _ref4[1];
-
-      acc[query] = queryName;
-      return acc;
-    }, {});
-
-    _this.mediaQueryListInstanceArray = [];
+    _this.mediaQueryListInstanceMap = new Map();
 
     _this.state = {
       media: media
@@ -93,16 +83,18 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var media = Object.entries(this.props.queries).reduce(function (acc, _ref5) {
-        var _ref6 = _slicedToArray(_ref5, 2),
-            queryName = _ref6[0],
-            query = _ref6[1];
+      var media = Object.entries(this.props.queries).reduce(function (acc, _ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            queryName = _ref4[0],
+            query = _ref4[1];
 
         var mediaQueryListInstance = window.matchMedia(query);
 
         mediaQueryListInstance.addListener(_this2.mediaQueryListener);
 
-        _this2.mediaQueryListInstanceArray.push(mediaQueryListInstance);
+        // this is so we can keep a reference to the MediaQueryList for removing the listener
+        // and knowing the queryName in `mediaQueryListener`
+        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance, queryName);
 
         acc[queryName] = mediaQueryListInstance.matches;
         return acc;
@@ -117,17 +109,17 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentWillUnmount() {
       var _this3 = this;
 
-      this.mediaQueryListInstanceArray.forEach(function (mediaQueryListInstance) {
-        mediaQueryListInstance.removeListener(_this3.mediaQueryListener);
+      this.mediaQueryListInstanceMap.forEach(function (_, mediaQueryList) {
+        mediaQueryList.removeListener(_this3.mediaQueryListener);
       });
     }
   }, {
     key: 'mediaQueryListener',
-    value: function mediaQueryListener(_ref7) {
-      var matches = _ref7.matches,
-          media = _ref7.media;
+    value: function mediaQueryListener(_ref5) {
+      var matches = _ref5.matches,
+          target = _ref5.target;
 
-      var queryName = this.reverseQueries[media];
+      var queryName = this.mediaQueryListInstanceMap.get(target);
       var newMedia = Object.assign({}, this.state.media, _defineProperty({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {

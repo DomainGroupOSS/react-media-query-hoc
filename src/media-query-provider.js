@@ -23,13 +23,7 @@ class MediaQueryProvider extends React.Component {
       return acc;
     }, {});
 
-    // this is for the mediaQueryListener to be able to find the queryName from it's event arg
-    this.reverseQueries = queryTuples.reduce((acc, [queryName, query]) => {
-      acc[query] = queryName;
-      return acc;
-    }, {});
-
-    this.mediaQueryListInstanceArray = [];
+    this.mediaQueryListInstanceMap = new Map();
 
     this.state = {
       media,
@@ -48,7 +42,9 @@ class MediaQueryProvider extends React.Component {
 
       mediaQueryListInstance.addListener(this.mediaQueryListener);
 
-      this.mediaQueryListInstanceArray.push(mediaQueryListInstance);
+      // this is so we can keep a reference to the MediaQueryList for removing the listener
+      // and knowing the queryName in `mediaQueryListener`
+      this.mediaQueryListInstanceMap.set(mediaQueryListInstance, queryName);
 
       acc[queryName] = mediaQueryListInstance.matches;
       return acc;
@@ -60,13 +56,13 @@ class MediaQueryProvider extends React.Component {
   }
 
   componentWillUnmount() {
-    this.mediaQueryListInstanceArray.forEach((mediaQueryListInstance) => {
-      mediaQueryListInstance.removeListener(this.mediaQueryListener);
+    this.mediaQueryListInstanceMap.forEach((_, mediaQueryList) => {
+      mediaQueryList.removeListener(this.mediaQueryListener);
     });
   }
 
-  mediaQueryListener({ matches, media }) {
-    const queryName = this.reverseQueries[media];
+  mediaQueryListener({ matches, target }) {
+    const queryName = this.mediaQueryListInstanceMap.get(target);
     const newMedia = {
       ...this.state.media,
       [queryName]: matches,
