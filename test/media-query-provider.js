@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { expect } from 'chai';
-import { mount } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
 import matchMediaMock from 'match-media-mock';
 import MediaQueryProvider from '../src/media-query-provider';
@@ -28,7 +28,11 @@ describe('<MediaQueryProvider />', () => {
 
   it('should render app', () => {
     expect(() => {
-      component = mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+      component = mount(
+        <MediaQueryProvider>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
     }).to.not.throw();
   });
 
@@ -53,8 +57,11 @@ describe('<MediaQueryProvider />', () => {
       someMediaQuery4: 'screen and (min-width: 66666px)',
     };
 
-    const otherComponent =
-      mount(<MediaQueryProvider queries={queries}><p>Test123</p></MediaQueryProvider>);
+    const otherComponent = mount(
+      <MediaQueryProvider queries={queries}>
+        <p>Test123</p>
+      </MediaQueryProvider>,
+    );
 
     expect(otherComponent.instance().getChildContext().media).to.eql({
       someMediaQuery: false,
@@ -68,7 +75,11 @@ describe('<MediaQueryProvider />', () => {
     let mobileComponent;
 
     before(() => {
-      mobileComponent = mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+      mobileComponent = mount(
+        <MediaQueryProvider>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
     });
 
     it('should include mobile in the media context', () => {
@@ -91,8 +102,11 @@ describe('<MediaQueryProvider />', () => {
     // dont want to do client mount
     const stub = sinon.stub(MediaQueryProvider.prototype, 'componentDidMount').returns('hi!');
 
-    const componentWithValues =
-      mount(<MediaQueryProvider values={values}><p>Test123</p></MediaQueryProvider>);
+    const componentWithValues = mount(
+      <MediaQueryProvider values={values}>
+        <p>Test123</p>
+      </MediaQueryProvider>,
+    );
 
     expect(MediaQueryProvider.prototype.componentDidMount).to.have.property('callCount', 1);
 
@@ -108,18 +122,66 @@ describe('<MediaQueryProvider />', () => {
     stub.restore();
   });
 
+  it('sets up MediaQueryList instaces when mounted', () => {
+    const spy = sinon.spy(window, 'matchMedia');
+
+    shallow(
+      <MediaQueryProvider>
+        <p>Test123</p>
+      </MediaQueryProvider>,
+    );
+
+    spy.restore();
+
+    expect(spy.callCount).to.equal(4);
+  });
+
+  it('removes the listeners from the MediaQueryList instaces on unmount', () => {
+    const mediaQueryListInstanceSpies = [];
+
+    const oldWindowMatchMedia = window.matchMedia;
+
+    window.matchMedia = (query) => {
+      const mockInstance = oldWindowMatchMedia(query);
+      mediaQueryListInstanceSpies.push(sinon.spy(mockInstance, 'removeListener'));
+      return mockInstance;
+    };
+
+    const instance = shallow(
+      <MediaQueryProvider>
+        <p>Test123</p>
+      </MediaQueryProvider>,
+    );
+
+    window.matchMedia = oldWindowMatchMedia;
+
+    instance.unmount();
+
+    mediaQueryListInstanceSpies.forEach((spy) => {
+      expect(spy.calledOnce).to.equal(true);
+    });
+  });
+
   context('when rendering server-side', () => {
     it('should render', () => {
       expect(() => {
-        ReactDOMServer.renderToString(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+        ReactDOMServer.renderToString(
+          <MediaQueryProvider>
+            <p>Test123</p>
+          </MediaQueryProvider>,
+        );
       }).to.not.throw();
     });
   });
 
   describe('rendering children', () => {
     it('when multiple children are provided we use React.Fragment', () => {
-      const testComponent =
-        mount(<MediaQueryProvider><p>Test123</p><p>Test123</p></MediaQueryProvider>);
+      const testComponent = mount(
+        <MediaQueryProvider>
+          <p>Test123</p>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+      );
       expect(testComponent.find('div').exists()).to.eql(false);
     });
 
@@ -136,14 +198,21 @@ describe('<MediaQueryProvider />', () => {
       });
 
       it('when multiple children are provided we wrap in a div', () => {
-        const testComponent =
-          mount(<MediaQueryProvider><p>Test123</p><p>Test123</p></MediaQueryProvider>);
+        const testComponent = mount(
+          <MediaQueryProvider>
+            <p>Test123</p>
+            <p>Test123</p>
+          </MediaQueryProvider>,
+        );
         expect(testComponent.find('div').exists()).to.eql(true);
       });
 
       it('renders no div when we have one child', () => {
-        const testComponent =
-          mount(<MediaQueryProvider><p>Test123</p></MediaQueryProvider>);
+        const testComponent = mount(
+          <MediaQueryProvider>
+            <p>Test123</p>
+          </MediaQueryProvider>,
+        );
         expect(testComponent.find('div').exists()).to.equal(false);
       });
     });
