@@ -121,9 +121,10 @@ const App = (props) => {
 
 #### React 16 ReactDOM.hydrate
 
-It's very important to realise a server client mismatch is a dangerous bug in React 16, ReactDOM.hydrate can cause very [strange](https://github.com/Tarnadas/react16-ssr-bug) html on the client if there is a mismatch. To mitigate this we use
-the two-pass rendering technique mention in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate). We render
-on the client in the first pass using the `values` used on the server, then we use the browsers native `matchMedia`
+It's very important to realise a server client mismatch is dangerous when using hydrate in React 16, ReactDOM.hydrate
+can cause very [strange](https://github.com/Tarnadas/react16-ssr-bug) html on the client if there is a mismatch.
+To mitigate this we use the two-pass rendering technique mentioned in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate).
+We render on the client in the first pass using `values` with `css-mediaquery` used on the server, then we use the browsers native `window.matchMedia`
 to get it's actual dimensions and render again if it causes different query results. This means there should be no React
 server/client mismatch warning in your console and you can safely use hydrate.
 

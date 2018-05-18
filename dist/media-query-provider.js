@@ -33,6 +33,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// this is for server side rendering and does not use window.matchMedia
+
 
 var isServer = typeof process !== 'undefined';
 
@@ -44,37 +46,28 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    var media = void 0;
+    var queryTuples = Object.entries(_this.props.queries);
 
-    if (_this.props.values) {
-      media = Object.entries(_this.props.queries).reduce(function (acc, _ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            queryName = _ref2[0],
-            query = _ref2[1];
+    var media = queryTuples.reduce(function (acc, _ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+          queryName = _ref2[0],
+          query = _ref2[1];
 
-        // see README.md's "React 16 ReactDOM.hydrate" for info on why we use staticMatch
-        // even in the browser
+      if (_this.props.values) {
         acc[queryName] = _cssMediaquery2.default.match(query, _this.props.values);
-        return acc;
-      }, {});
-    } else {
-      media = Object.entries(_this.props.queries).reduce(function (acc, _ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-            queryName = _ref4[0],
-            query = _ref4[1];
-
-        // if the user has not set `values` and is server rendering, default to false
+      } else {
+        // if the consumer has not set `values` and is server rendering, default to false
         // because we don't know the screen size
         acc[queryName] = isServer ? false : window.matchMedia(query).matches;
-        return acc;
-      }, {});
-    }
+      }
+      return acc;
+    }, {});
 
     // this is for the mediaQueryListener to be able to find the queryName from it's event arg
-    _this.reverseQueries = Object.entries(_this.props.queries).reduce(function (acc, _ref5) {
-      var _ref6 = _slicedToArray(_ref5, 2),
-          queryName = _ref6[0],
-          query = _ref6[1];
+    _this.reverseQueries = queryTuples.reduce(function (acc, _ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+          queryName = _ref4[0],
+          query = _ref4[1];
 
       acc[query] = queryName;
       return acc;
@@ -100,10 +93,10 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var media = Object.entries(this.props.queries).reduce(function (acc, _ref7) {
-        var _ref8 = _slicedToArray(_ref7, 2),
-            queryName = _ref8[0],
-            query = _ref8[1];
+      var media = Object.entries(this.props.queries).reduce(function (acc, _ref5) {
+        var _ref6 = _slicedToArray(_ref5, 2),
+            queryName = _ref6[0],
+            query = _ref6[1];
 
         var mediaQueryListInstance = window.matchMedia(query);
 
@@ -130,9 +123,9 @@ var MediaQueryProvider = function (_React$Component) {
     }
   }, {
     key: 'mediaQueryListener',
-    value: function mediaQueryListener(_ref9) {
-      var matches = _ref9.matches,
-          media = _ref9.media;
+    value: function mediaQueryListener(_ref7) {
+      var matches = _ref7.matches,
+          media = _ref7.media;
 
       var queryName = this.reverseQueries[media];
       var newMedia = Object.assign({}, this.state.media, _defineProperty({}, queryName, matches));
@@ -152,15 +145,15 @@ var MediaQueryProvider = function (_React$Component) {
         );
       }
 
-      if (_react2.default.Children.count(this.props.children) > 1) {
-        return _react2.default.createElement(
-          'div',
-          null,
-          this.props.children
-        );
+      if (_react2.default.Children.count(this.props.children) === 1) {
+        return this.props.children;
       }
 
-      return this.props.children;
+      return _react2.default.createElement(
+        'div',
+        null,
+        this.props.children
+      );
     }
   }]);
 

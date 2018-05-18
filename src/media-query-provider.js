@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowequal from 'shallowequal';
+// this is for server side rendering and does not use window.matchMedia
 import cssMediaQuery from 'css-mediaquery';
 
 const isServer = typeof process !== 'undefined';
@@ -9,26 +10,21 @@ class MediaQueryProvider extends React.Component {
   constructor(props) {
     super(props);
 
-    let media;
+    const queryTuples = Object.entries(this.props.queries);
 
-    if (this.props.values) {
-      media = Object.entries(this.props.queries).reduce((acc, [queryName, query]) => {
-        // see README.md's "React 16 ReactDOM.hydrate" for info on why we use staticMatch
-        // even in the browser
+    const media = queryTuples.reduce((acc, [queryName, query]) => {
+      if (this.props.values) {
         acc[queryName] = cssMediaQuery.match(query, this.props.values);
-        return acc;
-      }, {});
-    } else {
-      media = Object.entries(this.props.queries).reduce((acc, [queryName, query]) => {
-        // if the user has not set `values` and is server rendering, default to false
+      } else {
+        // if the consumer has not set `values` and is server rendering, default to false
         // because we don't know the screen size
         acc[queryName] = isServer ? false : window.matchMedia(query).matches;
-        return acc;
-      }, {});
-    }
+      }
+      return acc;
+    }, {});
 
     // this is for the mediaQueryListener to be able to find the queryName from it's event arg
-    this.reverseQueries = Object.entries(this.props.queries).reduce((acc, [queryName, query]) => {
+    this.reverseQueries = queryTuples.reduce((acc, [queryName, query]) => {
       acc[query] = queryName;
       return acc;
     }, {});
@@ -86,11 +82,11 @@ class MediaQueryProvider extends React.Component {
       return <React.Fragment>{this.props.children}</React.Fragment>;
     }
 
-    if (React.Children.count(this.props.children) > 1) {
-      return <div>{this.props.children}</div>;
+    if (React.Children.count(this.props.children) === 1) {
+      return this.props.children;
     }
 
-    return this.props.children;
+    return <div>{this.props.children}</div>;
   }
 }
 
