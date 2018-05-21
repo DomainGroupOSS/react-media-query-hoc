@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import shallowequal from 'shallowequal';
 // this is for server side rendering and does not use window.matchMedia
 import cssMediaQuery from 'css-mediaquery';
-
-const isServer = typeof process !== 'undefined';
+import isNode from 'detect-node';
 
 class MediaQueryProvider extends React.Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class MediaQueryProvider extends React.Component {
       } else {
         // if the consumer has not set `values` and is server rendering, default to false
         // because we don't know the screen size
-        acc[queryName] = isServer ? false : window.matchMedia(query).matches;
+        acc[queryName] = isNode ? false : window.matchMedia(query).matches;
       }
       return acc;
     }, {});

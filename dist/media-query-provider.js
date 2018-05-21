@@ -4,9 +4,45 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _map = require('babel-runtime/core-js/map');
+
+var _map2 = _interopRequireDefault(_map);
+
+var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
+var _entries = require('babel-runtime/core-js/object/entries');
+
+var _entries2 = _interopRequireDefault(_entries);
+
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _react = require('react');
 
@@ -26,30 +62,21 @@ var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var isServer = typeof process !== 'undefined';
 // this is for server side rendering and does not use window.matchMedia
 
-
-var isServer = typeof process !== 'undefined';
-
 var MediaQueryProvider = function (_React$Component) {
-  _inherits(MediaQueryProvider, _React$Component);
+  (0, _inherits3.default)(MediaQueryProvider, _React$Component);
 
   function MediaQueryProvider(props) {
-    _classCallCheck(this, MediaQueryProvider);
+    (0, _classCallCheck3.default)(this, MediaQueryProvider);
 
-    var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (MediaQueryProvider.__proto__ || (0, _getPrototypeOf2.default)(MediaQueryProvider)).call(this, props));
 
-    var queryTuples = Object.entries(_this.props.queries);
+    var queryTuples = (0, _entries2.default)(_this.props.queries);
 
     var media = queryTuples.reduce(function (acc, _ref) {
-      var _ref2 = _slicedToArray(_ref, 2),
+      var _ref2 = (0, _slicedToArray3.default)(_ref, 2),
           queryName = _ref2[0],
           query = _ref2[1];
 
@@ -63,7 +90,7 @@ var MediaQueryProvider = function (_React$Component) {
       return acc;
     }, {});
 
-    _this.mediaQueryListInstanceMap = new Map();
+    _this.mediaQueryListInstanceMap = new _map2.default();
 
     _this.state = {
       media: media
@@ -73,7 +100,7 @@ var MediaQueryProvider = function (_React$Component) {
     return _this;
   }
 
-  _createClass(MediaQueryProvider, [{
+  (0, _createClass3.default)(MediaQueryProvider, [{
     key: 'getChildContext',
     value: function getChildContext() {
       return this.state;
@@ -83,8 +110,8 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var media = Object.entries(this.props.queries).reduce(function (acc, _ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
+      var media = (0, _entries2.default)(this.props.queries).reduce(function (acc, _ref3) {
+        var _ref4 = (0, _slicedToArray3.default)(_ref3, 2),
             queryName = _ref4[0],
             query = _ref4[1];
 
@@ -120,7 +147,7 @@ var MediaQueryProvider = function (_React$Component) {
           target = _ref5.target;
 
       var queryName = this.mediaQueryListInstanceMap.get(target);
-      var newMedia = Object.assign({}, this.state.media, _defineProperty({}, queryName, matches));
+      var newMedia = (0, _assign2.default)({}, this.state.media, (0, _defineProperty3.default)({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
         this.setState({ media: newMedia });
@@ -148,7 +175,6 @@ var MediaQueryProvider = function (_React$Component) {
       );
     }
   }]);
-
   return MediaQueryProvider;
 }(_react2.default.Component);
 

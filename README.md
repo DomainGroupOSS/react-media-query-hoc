@@ -100,8 +100,7 @@ Components wrapped by `withMedia()` won't work with React's usual `ref` mechanis
 
 ### Server Side Rendering
 
-You can pass in media features from your server, all supported values can be found here:
-https://www.w3.org/TR/css3-mediaqueries/#media1
+You can pass in media features from your server, all supported values can be found [here](https://www.w3.org/TR/css3-mediaqueries/#media1).
 
 **Usage (matches mobile screen during SSR):**
 ```javascript
@@ -126,7 +125,7 @@ can cause very [strange](https://github.com/Tarnadas/react16-ssr-bug) html on th
 To mitigate this we use the two-pass rendering technique mentioned in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate).
 We render on the client in the first pass using `values` with `css-mediaquery` used on the server, then we use the browsers native `window.matchMedia`
 to get it's actual dimensions and render again if it causes different query results. This means there should be no React
-server/client mismatch warning in your console and you can safely use hydrate.
+server/client mismatch warning in your console and you can safely use hydrate. As a result of above, if you are server side rendering and using `ReactDOM.hydrate` you must supply a `values` prop.
 
 ## Testing Components
 
