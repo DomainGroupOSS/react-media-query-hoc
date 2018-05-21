@@ -125,7 +125,7 @@ can cause very [strange](https://github.com/Tarnadas/react16-ssr-bug) html on th
 To mitigate this we use the two-pass rendering technique mentioned in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate).
 We render on the client in the first pass using `values` with `css-mediaquery` used on the server, then we use the browsers native `window.matchMedia`
 to get it's actual dimensions and render again if it causes different query results. This means there should be no React
-server/client mismatch warning in your console and you can safely use hydrate. As a result of above, if you are server side rendering and using `ReactDOM.hydrate` you must supply a `values` prop.
+server/client mismatch warning in your console and you can safely use hydrate. As a result of above, if you are server side rendering and using `ReactDOM.hydrate` you must supply `MediaQueryProvider` a `values` prop.
 
 ## Testing Components
 

@@ -60,11 +60,13 @@ var _cssMediaquery = require('css-mediaquery');
 
 var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
+var _detectNode = require('detect-node');
+
+var _detectNode2 = _interopRequireDefault(_detectNode);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isServer = typeof process !== 'undefined';
 // this is for server side rendering and does not use window.matchMedia
-
 var MediaQueryProvider = function (_React$Component) {
   (0, _inherits3.default)(MediaQueryProvider, _React$Component);
 
@@ -85,7 +87,7 @@ var MediaQueryProvider = function (_React$Component) {
       } else {
         // if the consumer has not set `values` and is server rendering, default to false
         // because we don't know the screen size
-        acc[queryName] = isServer ? false : window.matchMedia(query).matches;
+        acc[queryName] = _detectNode2.default ? false : window.matchMedia(query).matches;
       }
       return acc;
     }, {});

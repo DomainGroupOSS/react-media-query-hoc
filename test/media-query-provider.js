@@ -136,6 +136,45 @@ describe('<MediaQueryProvider />', () => {
     expect(spy.callCount).to.equal(4);
   });
 
+  describe('constructor state initialisation', () => {
+    it('uses `cssMediaQuery` to query when values is provided', () => {
+      const values = {
+        width: 300,
+        type: 'screen',
+      };
+
+      const wrapper = shallow(
+        <MediaQueryProvider values={values}>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+        { disableLifecycleMethods: true },
+      );
+
+      expect(wrapper.state('media')).to.eql({
+        mobile: true,
+        tablet: false,
+        desktop: false,
+        largeDesktop: false,
+      });
+    });
+
+    it('defaults to false when values is not provided and we are on the server', () => {
+      const wrapper = shallow(
+        <MediaQueryProvider>
+          <p>Test123</p>
+        </MediaQueryProvider>,
+        { disableLifecycleMethods: true },
+      );
+
+      expect(wrapper.state('media')).to.eql({
+        mobile: false,
+        tablet: false,
+        desktop: false,
+        largeDesktop: false,
+      });
+    });
+  });
+
   it('removes the listeners from the MediaQueryList instaces on unmount', () => {
     const mediaQueryListInstanceSpies = [];
 
