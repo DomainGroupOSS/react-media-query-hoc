@@ -6,7 +6,8 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - A simple API which doesnt require you to put `MediaQuery` components all over your code base
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
-- Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) for server side rendering
+- Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) which parses and determines if a given CSS Media Query
+matches a set of values (used for server side rendering).
 
 ## Why not use this?
 We always recommend using vanilla CSS media queries to build responsive websites, this is simpler and provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). At Domain we needed to use this component for legacy ad tech and stat reasons and advise against it's use for general responsive website design.
@@ -96,7 +97,7 @@ export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
-Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function. Note this means the wrapped component can not be a [stateless function](https://github.com/facebook/react/issues/10831).
+Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function. Note: this means the wrapped component can not be a [stateless function](https://github.com/facebook/react/issues/10831).
 
 ### Server Side Rendering
 

@@ -8,9 +8,9 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _assign = require('babel-runtime/core-js/object/assign');
+var _extends3 = require('babel-runtime/helpers/extends');
 
-var _assign2 = _interopRequireDefault(_assign);
+var _extends4 = _interopRequireDefault(_extends3);
 
 var _map = require('babel-runtime/core-js/map');
 
@@ -149,7 +149,7 @@ var MediaQueryProvider = function (_React$Component) {
           target = _ref5.target;
 
       var queryName = this.mediaQueryListInstanceMap.get(target);
-      var newMedia = (0, _assign2.default)({}, this.state.media, (0, _defineProperty3.default)({}, queryName, matches));
+      var newMedia = (0, _extends4.default)({}, this.state.media, (0, _defineProperty3.default)({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
         this.setState({ media: newMedia });
