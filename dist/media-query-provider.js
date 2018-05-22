@@ -4,45 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _extends3 = require('babel-runtime/helpers/extends');
-
-var _extends4 = _interopRequireDefault(_extends3);
-
-var _map = require('babel-runtime/core-js/map');
-
-var _map2 = _interopRequireDefault(_map);
-
-var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
-
-var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
-var _entries = require('babel-runtime/core-js/object/entries');
-
-var _entries2 = _interopRequireDefault(_entries);
-
-var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
-
-var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = require('babel-runtime/helpers/inherits');
-
-var _inherits3 = _interopRequireDefault(_inherits2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -62,23 +26,28 @@ var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 // this is for server side rendering and does not use window.matchMedia
 
+
+var hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+
 var MediaQueryProvider = function (_React$Component) {
-  (0, _inherits3.default)(MediaQueryProvider, _React$Component);
+  _inherits(MediaQueryProvider, _React$Component);
 
   function MediaQueryProvider(props) {
-    (0, _classCallCheck3.default)(this, MediaQueryProvider);
+    _classCallCheck(this, MediaQueryProvider);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (MediaQueryProvider.__proto__ || (0, _getPrototypeOf2.default)(MediaQueryProvider)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    var queryTuples = (0, _entries2.default)(_this.props.queries);
-
-    var media = queryTuples.reduce(function (acc, _ref) {
-      var _ref2 = (0, _slicedToArray3.default)(_ref, 2),
-          queryName = _ref2[0],
-          query = _ref2[1];
+    var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
+      var query = _this.props.queries[queryName];
 
       if (_this.props.values) {
         acc[queryName] = _cssMediaquery2.default.match(query, _this.props.values);
@@ -90,7 +59,7 @@ var MediaQueryProvider = function (_React$Component) {
       return acc;
     }, {});
 
-    _this.mediaQueryListInstanceMap = new _map2.default();
+    _this.mediaQueryListInstanceMap = new Map();
 
     _this.state = {
       media: media
@@ -100,7 +69,7 @@ var MediaQueryProvider = function (_React$Component) {
     return _this;
   }
 
-  (0, _createClass3.default)(MediaQueryProvider, [{
+  _createClass(MediaQueryProvider, [{
     key: 'getChildContext',
     value: function getChildContext() {
       return this.state;
@@ -110,12 +79,8 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var media = (0, _entries2.default)(this.props.queries).reduce(function (acc, _ref3) {
-        var _ref4 = (0, _slicedToArray3.default)(_ref3, 2),
-            queryName = _ref4[0],
-            query = _ref4[1];
-
-        var mediaQueryListInstance = window.matchMedia(query);
+      var media = Object.keys(this.props.queries).reduce(function (acc, queryName) {
+        var mediaQueryListInstance = window.matchMedia(_this2.props.queries[queryName]);
 
         mediaQueryListInstance.addListener(_this2.mediaQueryListener);
 
@@ -142,12 +107,12 @@ var MediaQueryProvider = function (_React$Component) {
     }
   }, {
     key: 'mediaQueryListener',
-    value: function mediaQueryListener(_ref5) {
-      var matches = _ref5.matches,
-          target = _ref5.target;
+    value: function mediaQueryListener(_ref) {
+      var matches = _ref.matches,
+          target = _ref.target;
 
       var queryName = this.mediaQueryListInstanceMap.get(target);
-      var newMedia = (0, _extends4.default)({}, this.state.media, (0, _defineProperty3.default)({}, queryName, matches));
+      var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
         this.setState({ media: newMedia });
@@ -175,6 +140,7 @@ var MediaQueryProvider = function (_React$Component) {
       );
     }
   }]);
+
   return MediaQueryProvider;
 }(_react2.default.Component);
 

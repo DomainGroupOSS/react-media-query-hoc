@@ -130,6 +130,11 @@ We render on the client in the first pass using `values` with `css-mediaquery` u
 to get it's actual dimensions and render again if it causes different query results. This means there should be no React
 server/client mismatch warning in your console and you can safely use hydrate. As a result of above, if you are server side rendering and using `ReactDOM.hydrate` you must supply `MediaQueryProvider` a `values` prop.
 
+## Browser Support
+
+The oldest browser we support is IE11,
+if you want to support even older browsers please make sure you are using a polyfill for [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) such as [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
+
 ## Testing Components
 
 Because the media queries and context are abstracted out you can easily test components with or without the `withMedia` HOC, just ensure you export your component base without the HOC as well, eg:

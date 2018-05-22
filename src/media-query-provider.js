@@ -10,9 +10,9 @@ class MediaQueryProvider extends React.Component {
   constructor(props) {
     super(props);
 
-    const queryTuples = Object.entries(this.props.queries);
+    const media = Object.keys(this.props.queries).reduce((acc, queryName) => {
+      const query = this.props.queries[queryName];
 
-    const media = queryTuples.reduce((acc, [queryName, query]) => {
       if (this.props.values) {
         acc[queryName] = cssMediaQuery.match(query, this.props.values);
       } else {
@@ -37,8 +37,8 @@ class MediaQueryProvider extends React.Component {
   }
 
   componentDidMount() {
-    const media = Object.entries(this.props.queries).reduce((acc, [queryName, query]) => {
-      const mediaQueryListInstance = window.matchMedia(query);
+    const media = Object.keys(this.props.queries).reduce((acc, queryName) => {
+      const mediaQueryListInstance = window.matchMedia(this.props.queries[queryName]);
 
       mediaQueryListInstance.addListener(this.mediaQueryListener);
 
