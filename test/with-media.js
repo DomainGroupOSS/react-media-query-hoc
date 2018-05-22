@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
@@ -44,7 +42,14 @@ describe('<withMedia />', () => {
 
   it('should provide a ref for the wrapped component', () => {
     let receivedRef = false;
-    component = mount(<TestComponentWithMedia wrappedRef={(ref) => { receivedRef = true; }}/>, testContext);
-    expect(receivedRef).to.not.equal(false);
+    component = mount(
+      <TestComponentWithMedia
+        wrappedRef={() => {
+          receivedRef = true;
+        }}
+      />,
+      testContext,
+    );
+    expect(receivedRef).to.equal(true);
   });
 });

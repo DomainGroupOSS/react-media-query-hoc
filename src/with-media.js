@@ -13,7 +13,6 @@ const withMedia = (WrappedComponent) => {
       return (
         <WrappedComponent
           {...otherProps}
-          {...this.state}
           media={this.context.media}
           ref={wrappedRef}
         />
@@ -30,10 +29,11 @@ const withMedia = (WrappedComponent) => {
   };
 
   MediaQueryWrapper.defaultProps = {
-    wrappedRef: () => {},
+    wrappedRef: undefined,
   };
 
-  MediaQueryWrapper.displayName = `MediaQuery(${getDisplayName(WrappedComponent)})`;
+  MediaQueryWrapper.displayName = `withMedia(${getDisplayName(WrappedComponent)})`;
+
   return hoistNonReactStatics(MediaQueryWrapper, WrappedComponent);
 };
 

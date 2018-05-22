@@ -1,13 +1,18 @@
 # react-media-query-hoc
-A dead simple React Higher Order Component (HOC) that uses context for matching media queries
+A dead simple React Higher Order Component (HOC) that uses context for matching media queries.
 
 
 ## Why use this?
 - A simple API which doesnt require you to put `MediaQuery` components all over your code base
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
-- Uses [matchmedia](https://github.com/iceddev/matchmedia) for media queries for client and server
-- Abstracted away React context which is experimental (and subject to change for <= React 15)
+- Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) which parses and determines if a given CSS Media Query
+matches a set of values (used for server side rendering).
+- Abstracts away the context API, we use the legacy context API internally so we can support React 15 and 16. But as a
+consumer you don't need to worry.
+
+## Why not use this?
+We always recommend using vanilla CSS media queries to build responsive websites, this is simpler and provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). At Domain we needed to use this component for legacy ad tech and stat reasons and advise against it's use for general responsive website design.
 
 ## Install
 
@@ -28,7 +33,7 @@ This library is designed so that you have 1 `MediaQueryProvider` parent and 1-ma
 
 ### `MediaQueryProvider`
 
-This component will listen to media events you want to configure, it should be used once as a parent component
+This component will listen to media events you want to configure, it should be used once as a parent component.
 
 **Usage:**
 
@@ -68,7 +73,6 @@ const App = (props) => {
 ### `withMedia`
 
 This is a HOC to provide media match props to your component.
-This abstracts away context so that if there is any changes to the API in the future its easier to upgrade (see: [React Context](https://facebook.github.io/react/docs/context.html))
 
 **Usage:**
 ```javascript
@@ -95,12 +99,11 @@ export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
-Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function.
+Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function. Note: this means the wrapped component can not be a [stateless function](https://github.com/facebook/react/issues/10831).
 
 ### Server Side Rendering
 
-You can pass in media features from your server, all supported values can be found here:
-https://www.w3.org/TR/css3-mediaqueries/#media1
+You can pass in media features from your server, all supported values can be found [here](https://www.w3.org/TR/css3-mediaqueries/#media1).
 
 **Usage (matches mobile screen during SSR):**
 ```javascript
@@ -117,6 +120,20 @@ const App = (props) => {
   );
 };
 ```
+
+#### React 16 ReactDOM.hydrate
+
+It's very important to realise a server client mismatch is dangerous when using hydrate in React 16, ReactDOM.hydrate
+can cause very [strange](https://github.com/facebook/react/issues/10591) html on the client if there is a mismatch.
+To mitigate this we use the two-pass rendering technique mentioned in the React [docs](https://reactjs.org/docs/react-dom.html#hydrate).
+We render on the client in the first pass using `values` with `css-mediaquery` used on the server, then we use the browsers native `window.matchMedia`
+to get it's actual dimensions and render again if it causes different query results. This means there should be no React
+server/client mismatch warning in your console and you can safely use hydrate. As a result of above, if you are server side rendering and using `ReactDOM.hydrate` you must supply `MediaQueryProvider` a `values` prop.
+
+## Browser Support
+
+The oldest browser we support is IE11,
+if you want to support even older browsers please make sure you are using a polyfill for [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) such as [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
 
 ## Testing Components
 

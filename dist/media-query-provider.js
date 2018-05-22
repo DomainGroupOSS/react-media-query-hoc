@@ -4,15 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _matchmedia = require('matchmedia');
-
-var _matchmedia2 = _interopRequireDefault(_matchmedia);
 
 var _propTypes = require('prop-types');
 
@@ -22,20 +20,23 @@ var _shallowequal = require('shallowequal');
 
 var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
+var _cssMediaquery = require('css-mediaquery');
+
+var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// this is for server side rendering and does not use window.matchMedia
 
-var defaultQueries = {
-  mobile: 'screen and (max-width: 623px)',
-  tablet: 'screen and (min-width: 624px) and (max-width: 1020px)',
-  desktop: 'screen and (min-width: 1021px) and (max-width: 1440px)',
-  largeDesktop: 'screen and (min-width: 1441px)'
-};
+
+var hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
 
 var MediaQueryProvider = function (_React$Component) {
   _inherits(MediaQueryProvider, _React$Component);
@@ -45,28 +46,26 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    _this.queryMedia = function (queries, values) {
-      return Object.keys(queries).reduce(function (result, key) {
-        var _matchMedia = (0, _matchmedia2.default)(queries[key], values),
-            matches = _matchMedia.matches;
+    var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
+      var query = _this.props.queries[queryName];
 
-        result[key] = matches; // eslint-disable-line no-param-reassign
-        return result;
-      }, {});
-    };
-
-    _this.clientMatch = function () {
-      var media = _this.queryMedia(_this.props.queries, {});
-
-      // no need to set state when it hasnt changed
-      if (!(0, _shallowequal2.default)(media, _this.state.media)) {
-        _this.setState({ media: media });
+      if (_this.props.values) {
+        acc[queryName] = _cssMediaquery2.default.match(query, _this.props.values);
+      } else {
+        // if the consumer has not set `values` and is server rendering, default to false
+        // because we don't know the screen size
+        acc[queryName] = hasMatchMedia ? window.matchMedia(query).matches : false;
       }
-    };
+      return acc;
+    }, {});
+
+    _this.mediaQueryListInstanceMap = new Map();
 
     _this.state = {
-      media: _this.queryMedia(props.queries, props.values)
+      media: media
     };
+
+    _this.mediaQueryListener = _this.mediaQueryListener.bind(_this);
     return _this;
   }
 
@@ -80,34 +79,61 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      // even if we supplied values for SSR, they may not have matched up with client screen
-      // so need to requery with client browser values
-      this.clientMatch();
+      var media = Object.keys(this.props.queries).reduce(function (acc, queryName) {
+        var mediaQueryListInstance = window.matchMedia(_this2.props.queries[queryName]);
 
-      Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this2.props.queries[key], _this2.props.values).addListener(_this2.clientMatch);
-      });
+        mediaQueryListInstance.addListener(_this2.mediaQueryListener);
+
+        // this is so we can keep a reference to the MediaQueryList for removing the listener
+        // and knowing the queryName in `mediaQueryListener`
+        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance, queryName);
+
+        acc[queryName] = mediaQueryListInstance.matches;
+        return acc;
+      }, {});
+
+      if (!(0, _shallowequal2.default)(media, this.state.media)) {
+        this.setState({ media: media }); // eslint-disable-line react/no-did-mount-set-state
+      }
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       var _this3 = this;
 
-      Object.keys(this.props.queries).forEach(function (key) {
-        (0, _matchmedia2.default)(_this3.props.queries[key], _this3.props.values).removeListener(_this3.clientMatch);
+      this.mediaQueryListInstanceMap.forEach(function (_, mediaQueryList) {
+        mediaQueryList.removeListener(_this3.mediaQueryListener);
       });
     }
+  }, {
+    key: 'mediaQueryListener',
+    value: function mediaQueryListener(_ref) {
+      var matches = _ref.matches,
+          target = _ref.target;
 
-    // check for matches on client mount
+      var queryName = this.mediaQueryListInstanceMap.get(target);
+      var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
 
+      if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
+        this.setState({ media: newMedia });
+      }
+    }
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.Fragment ? _react2.default.createElement(
-        _react2.default.Fragment,
-        null,
-        this.props.children
-      ) : _react2.default.createElement(
+      if (_react2.default.Fragment) {
+        return _react2.default.createElement(
+          _react2.default.Fragment,
+          null,
+          this.props.children
+        );
+      }
+
+      if (_react2.default.Children.count(this.props.children) === 1) {
+        return this.props.children;
+      }
+
+      return _react2.default.createElement(
         'div',
         null,
         this.props.children
@@ -123,13 +149,18 @@ MediaQueryProvider.childContextTypes = {
 };
 
 MediaQueryProvider.propTypes = {
-  queries: _propTypes2.default.object, // eslint-disable-line react/forbid-prop-types
   children: _propTypes2.default.node.isRequired,
+  queries: _propTypes2.default.object, // eslint-disable-line react/forbid-prop-types
   values: _propTypes2.default.object // eslint-disable-line react/forbid-prop-types
 };
 
 MediaQueryProvider.defaultProps = {
-  queries: defaultQueries,
+  queries: {
+    mobile: 'screen and (max-width: 623px)',
+    tablet: 'screen and (min-width: 624px) and (max-width: 1020px)',
+    desktop: 'screen and (min-width: 1021px) and (max-width: 1440px)',
+    largeDesktop: 'screen and (min-width: 1441px)'
+  },
   values: {}
 };
 

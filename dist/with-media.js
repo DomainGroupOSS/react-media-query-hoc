@@ -51,7 +51,7 @@ var withMedia = function withMedia(WrappedComponent) {
             wrappedRef = _props.wrappedRef,
             otherProps = _objectWithoutProperties(_props, ['wrappedRef']);
 
-        return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, this.state, {
+        return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, {
           media: this.context.media,
           ref: wrappedRef
         }));
@@ -70,10 +70,11 @@ var withMedia = function withMedia(WrappedComponent) {
   };
 
   MediaQueryWrapper.defaultProps = {
-    wrappedRef: function wrappedRef() {}
+    wrappedRef: undefined
   };
 
-  MediaQueryWrapper.displayName = 'MediaQuery(' + getDisplayName(WrappedComponent) + ')';
+  MediaQueryWrapper.displayName = 'withMedia(' + getDisplayName(WrappedComponent) + ')';
+
   return (0, _hoistNonReactStatics2.default)(MediaQueryWrapper, WrappedComponent);
 };
 

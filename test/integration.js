@@ -1,57 +1,54 @@
-/* eslint-disable */
-
 import React from 'react';
 import { expect } from 'chai';
-import { mount } from 'enzyme';
-import proxyquire from 'proxyquire';
+import { render, mount } from 'enzyme';
+import matchMediaMock from 'match-media-mock';
 import withMedia from '../src/with-media';
 import TestComponent from './utils/test-component';
 import MediaQueryProvider from '../src/media-query-provider';
-import sinon from 'sinon';
 
 describe('Integration Tests', () => {
-
-  it('should render mobile view with values specified on server', () => {
-    const values = {
-      width: 300,
-      type: 'screen',
-    };
-
-    // dont want to do client mount
-    const stub = sinon.stub(MediaQueryProvider.prototype, 'componentDidMount').returns('hi!');
-
-    const TestComponentWithMedia = withMedia(TestComponent);
-    const component = mount(
-      <MediaQueryProvider values={values}>
-        <TestComponentWithMedia />
-      </MediaQueryProvider>,
-    );
-
-    expect(component.find('.test-component').text()).to.equal('Mobile!');
-
-    stub.restore();
+  before(() => {
+    // mock browser media match to have large screen
+    const matchMediaMockInstance = matchMediaMock.create();
+    matchMediaMockInstance.setConfig({ type: 'screen', width: 1200 });
+    window.matchMedia = matchMediaMockInstance;
   });
 
-  it('should not render mobile view after client / server mismatch', () => {
+  after(() => {
+    delete window.matchMedia;
+  });
+
+  it('should render using values on the first render pass', () => {
     const values = {
       width: 300,
       type: 'screen',
     };
 
-    // mock browser media match to have large screen
-    const matchMediaMock = require('match-media-mock').create();
-    matchMediaMock.setConfig({type: 'screen', width: 1200})
+    const TestComponentWithMedia = withMedia(TestComponent);
+    const component =
+      render(
+        <MediaQueryProvider values={values}>
+          <TestComponentWithMedia />
+        </MediaQueryProvider>,
+      );
 
-    const MQP = proxyquire('../src/media-query-provider.js', { 'matchmedia': matchMediaMock }).default;
+    expect(component.find('.test-component').text()).to.equal('Mobile!');
+  });
+
+  it('should not render mobile view after client/server mismatch is figured out in componentDidMount', () => {
+    const values = {
+      width: 300,
+      type: 'screen',
+    };
 
     const TestComponentWithMedia = withMedia(TestComponent);
-    const component = mount(
-      <MQP values={values}>
-        <TestComponentWithMedia />
-      </MQP>,
-    );
+    const component =
+      mount(
+        <MediaQueryProvider values={values}>
+          <TestComponentWithMedia />
+        </MediaQueryProvider>,
+      );
 
     expect(component.find('.test-component').text()).to.equal('Other!');
   });
-
 });
