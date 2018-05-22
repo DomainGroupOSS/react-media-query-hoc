@@ -68,7 +68,6 @@
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "css-mediaquery": "^0.1.2",
-    "detect-node": "^2.0.3",
     "hoist-non-react-statics": "^2.5.0",
     "prop-types": "^15.5.10",
     "shallowequal": "^1.0.2"
