@@ -8,6 +8,8 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - Easier to test than other react media query libraries
 - Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) which parses and determines if a given CSS Media Query
 matches a set of values (used for server side rendering).
+- Abstracts away the context API, we use the legacy context API internally so we can support React 15 and 16. But as a
+consumer you don't need to worry.
 
 ## Why not use this?
 We always recommend using vanilla CSS media queries to build responsive websites, this is simpler and provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). At Domain we needed to use this component for legacy ad tech and stat reasons and advise against it's use for general responsive website design.
