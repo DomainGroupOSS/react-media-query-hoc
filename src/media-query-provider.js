@@ -56,9 +56,8 @@ class MediaQueryProvider extends React.Component {
   }
 
   componentWillUnmount() {
-    this.mediaQueryListInstanceMap.forEach((_, mediaQueryList) => {
-      mediaQueryList.query.removeListener(this.mediaQueryListener);
-    });
+    this.mediaQueryListInstanceMap.forEach(mediaQueryList =>
+      mediaQueryList.query.removeListener(this.mediaQueryListener));
   }
 
   mediaQueryListener({ matches, media }) {

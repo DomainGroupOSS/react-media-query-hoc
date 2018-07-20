@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-import matchMediaMock from 'match-media-mock';
+import cssMediaQuery from 'css-mediaquery';
 import MediaQueryProvider from '../src/media-query-provider';
 
 describe('<MediaQueryProvider />', () => {
@@ -16,14 +16,17 @@ describe('<MediaQueryProvider />', () => {
       value: () => {},
     });
 
-    const matchMediaMockInstance = matchMediaMock.create();
-    matchMediaMockInstance.setConfig({ type: 'screen', width: 1200 });
-    window.matchMedia = matchMediaMockInstance;
+    const getMatchMediaMock = (config) => {
+      return (media) => {
+        const matches = cssMediaQuery.match(media, config);
+        return { matches, media, addListener: () => {}, removeListener: () => {} };
+      };
+    };
+    window.matchMedia = getMatchMediaMock({ type: 'screen', width: 1200 });
   });
 
   after(() => {
     Reflect.deleteProperty(global, 'HTMLElement');
-    delete window.matchMedia;
   });
 
   it('should render app', () => {
