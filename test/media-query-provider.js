@@ -43,6 +43,7 @@ describe('<MediaQueryProvider />', () => {
 
   after(() => {
     Reflect.deleteProperty(global, 'HTMLElement');
+    delete window.matchMedia;
   });
 
   it('should render app', () => {
