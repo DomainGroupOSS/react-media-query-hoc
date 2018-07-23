@@ -61,7 +61,7 @@ class MediaQueryProvider extends React.Component {
   }
 
   mediaQueryListener({ matches, media }) {
-    const queryName = this.mediaQueryListInstanceMap.get(media).queryName;
+    const { queryName } = this.mediaQueryListInstanceMap.get(media);
     const newMedia = {
       ...this.state.media,
       [queryName]: matches,
