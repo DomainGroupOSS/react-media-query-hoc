@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, mount } from 'enzyme';
-import matchMediaMock from 'match-media-mock';
+import getMatchMediaMock from './utils/get-match-media-mock';
 import withMedia from '../src/with-media';
 import TestComponent from './utils/test-component';
 import MediaQueryProvider from '../src/media-query-provider';
@@ -9,9 +9,8 @@ import MediaQueryProvider from '../src/media-query-provider';
 describe('Integration Tests', () => {
   before(() => {
     // mock browser media match to have large screen
-    const matchMediaMockInstance = matchMediaMock.create();
-    matchMediaMockInstance.setConfig({ type: 'screen', width: 1200 });
-    window.matchMedia = matchMediaMockInstance;
+    const matchMediaMock = getMatchMediaMock({ type: 'screen', width: 1200 });
+    window.matchMedia = matchMediaMock.matchMedia;
   });
 
   after(() => {
