@@ -3,26 +3,8 @@ import ReactDOMServer from 'react-dom/server';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-import cssMediaQuery from 'css-mediaquery';
+import getMatchMediaMock from './utils/get-match-media-mock';
 import MediaQueryProvider from '../src/media-query-provider';
-
-const getMatchMediaMock = (config) => {
-  const listeners = {};
-  return {
-    update: (newConfig) => Object.keys(listeners).forEach((media) => {
-      listeners[media].forEach((listener) => listener({ matches: cssMediaQuery.match(media, newConfig), media }));
-    }),
-    matchMedia: (media) => {
-      listeners[media] = [];
-      return {
-        matches: cssMediaQuery.match(media, config),
-        media,
-        addListener: (listener) => { listeners[media].push(listener); },
-        removeListener: () => {},
-      };
-    },
-  };
-};
 
 describe('<MediaQueryProvider />', () => {
   let component;
