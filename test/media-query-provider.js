@@ -3,11 +3,30 @@ import ReactDOMServer from 'react-dom/server';
 import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
-import matchMediaMock from 'match-media-mock';
+import cssMediaQuery from 'css-mediaquery';
 import MediaQueryProvider from '../src/media-query-provider';
+
+const getMatchMediaMock = (config) => {
+  const listeners = {};
+  return {
+    update: (newConfig) => Object.keys(listeners).forEach((media) => {
+      listeners[media].forEach((listener) => listener({ matches: cssMediaQuery.match(media, newConfig), media }));
+    }),
+    matchMedia: (media) => {
+      listeners[media] = [];
+      return {
+        matches: cssMediaQuery.match(media, config),
+        media,
+        addListener: (listener) => { listeners[media].push(listener); },
+        removeListener: () => {},
+      };
+    },
+  };
+};
 
 describe('<MediaQueryProvider />', () => {
   let component;
+  let matchMediaMock;
 
   before(() => {
     // TODO see https://github.com/sinonjs/sinon/issues/1377
@@ -15,10 +34,11 @@ describe('<MediaQueryProvider />', () => {
       configurable: true,
       value: () => {},
     });
+  });
 
-    const matchMediaMockInstance = matchMediaMock.create();
-    matchMediaMockInstance.setConfig({ type: 'screen', width: 1200 });
-    window.matchMedia = matchMediaMockInstance;
+  beforeEach(() => {
+    matchMediaMock = getMatchMediaMock({ type: 'screen', width: 1200 });
+    window.matchMedia = matchMediaMock.matchMedia;
   });
 
   after(() => {
@@ -135,6 +155,22 @@ describe('<MediaQueryProvider />', () => {
 
     expect(spy.callCount).to.equal(4);
   });
+
+  it('handles matchMedia listener events and updates the context', () => {
+    const testComponent = mount(
+      <MediaQueryProvider>
+        <p>Test123</p>
+      </MediaQueryProvider>,
+    );
+
+    const { media: mediaBefore } = testComponent.instance().getChildContext();
+    matchMediaMock.update({ type: 'screen', width: 600 });
+    const { media: mediaAfter } = testComponent.instance().getChildContext();
+
+    expect(mediaBefore).to.eql({ desktop: true, largeDesktop: false, mobile: false, tablet: false });
+    expect(mediaAfter).to.eql({ desktop: false, largeDesktop: false, mobile: true, tablet: false });
+  });
+
 
   describe('constructor state initialisation', () => {
     it('uses `cssMediaQuery` to query when values is provided', () => {

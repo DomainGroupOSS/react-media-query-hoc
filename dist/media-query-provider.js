@@ -86,7 +86,7 @@ var MediaQueryProvider = function (_React$Component) {
 
         // this is so we can keep a reference to the MediaQueryList for removing the listener
         // and knowing the queryName in `mediaQueryListener`
-        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance, queryName);
+        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance.media, { query: mediaQueryListInstance, queryName: queryName });
 
         acc[queryName] = mediaQueryListInstance.matches;
         return acc;
@@ -101,17 +101,17 @@ var MediaQueryProvider = function (_React$Component) {
     value: function componentWillUnmount() {
       var _this3 = this;
 
-      this.mediaQueryListInstanceMap.forEach(function (_, mediaQueryList) {
-        mediaQueryList.removeListener(_this3.mediaQueryListener);
+      this.mediaQueryListInstanceMap.forEach(function (mediaQueryList) {
+        return mediaQueryList.query.removeListener(_this3.mediaQueryListener);
       });
     }
   }, {
     key: 'mediaQueryListener',
     value: function mediaQueryListener(_ref) {
       var matches = _ref.matches,
-          target = _ref.target;
+          media = _ref.media;
 
-      var queryName = this.mediaQueryListInstanceMap.get(target);
+      var queryName = this.mediaQueryListInstanceMap.get(media).queryName;
       var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
