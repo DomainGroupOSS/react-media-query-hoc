@@ -111,7 +111,9 @@ var MediaQueryProvider = function (_React$Component) {
       var matches = _ref.matches,
           media = _ref.media;
 
-      var queryName = this.mediaQueryListInstanceMap.get(media).queryName;
+      var _mediaQueryListInstan = this.mediaQueryListInstanceMap.get(media),
+          queryName = _mediaQueryListInstan.queryName;
+
       var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
 
       if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
