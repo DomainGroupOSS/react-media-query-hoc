@@ -44,12 +44,16 @@ class MediaQueryProvider extends React.Component {
 
       // this is so we can keep a reference to the MediaQueryList for removing the listener
       // and knowing the queryName in `mediaQueryListener`
-      this.mediaQueryListInstanceMap.set(mediaQueryListInstance.media, { query: mediaQueryListInstance, queryName });
+      this.mediaQueryListInstanceMap.set(mediaQueryListInstance.media, {
+        query: mediaQueryListInstance,
+        queryName,
+      });
 
       acc[queryName] = mediaQueryListInstance.matches;
       return acc;
     }, {});
 
+    // need to rerender with correct media if it didnt match up with initial
     if (!shallowequal(media, this.state.media)) {
       this.setState({ media }); // eslint-disable-line react/no-did-mount-set-state
     }
