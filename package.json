@@ -73,7 +73,6 @@
     "react": "^16.3.2",
     "react-addons-test-utils": "^15.1.0",
     "react-dom": "^16.3.2",
-    "react-dom-factories": "^1.0.2",
     "sinon": "^5.0.7",
     "start-server-and-test": "^1.7.0"
   },
