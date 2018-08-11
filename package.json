@@ -6,13 +6,15 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "babel --out-dir dist src",
-    "start": "yarn watch",
+    "start": "node demo/server.js",
     "watch": "nodemon -w demo -x node demo/server.js",
-    "test": "mocha test",
+    "test": "yarn build && yarn lint && yarn test:unit && yarn test:integration",
+    "test:unit": "mocha test",
+    "test:integration": "start-server-and-test start http://localhost:3000 cy:run",
     "tdd": "mocha --watch test",
-    "lint": "eslint .",
-    "cypress:open": "cypress open",
-    "test:integration": "yarn build && yarn start && yarn cypress:open"
+    "lint": "eslint src",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "keywords": [
     "react",
@@ -72,7 +74,8 @@
     "react-addons-test-utils": "^15.1.0",
     "react-dom": "^16.3.2",
     "react-dom-factories": "^1.0.2",
-    "sinon": "^5.0.7"
+    "sinon": "^5.0.7",
+    "start-server-and-test": "^1.7.0"
   },
   "dependencies": {
     "css-mediaquery": "^0.1.2",

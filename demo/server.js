@@ -40,9 +40,11 @@ server.get('/bundle.js', (req, res) => {
 server.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
 
+  const { width } = req.query;
+
   const props = {
     values: {
-      width: 300,
+      width: width || 1021, // default min desktop width
       type: 'screen',
     },
   };
@@ -73,4 +75,3 @@ server.get('/', (req, res) => {
 });
 
 server.listen(3000, () => console.log('Listening on port 3000!'));
-

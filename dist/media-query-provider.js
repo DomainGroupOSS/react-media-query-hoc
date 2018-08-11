@@ -56,6 +56,7 @@ var MediaQueryProvider = function (_React$Component) {
         // because we don't know the screen size
         acc[queryName] = hasMatchMedia ? window.matchMedia(query).matches : false;
       }
+
       return acc;
     }, {});
 
