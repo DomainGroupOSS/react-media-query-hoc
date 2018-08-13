@@ -56,6 +56,7 @@ var MediaQueryProvider = function (_React$Component) {
         // because we don't know the screen size
         acc[queryName] = hasMatchMedia ? window.matchMedia(query).matches : false;
       }
+
       return acc;
     }, {});
 
@@ -86,12 +87,16 @@ var MediaQueryProvider = function (_React$Component) {
 
         // this is so we can keep a reference to the MediaQueryList for removing the listener
         // and knowing the queryName in `mediaQueryListener`
-        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance.media, { query: mediaQueryListInstance, queryName: queryName });
+        _this2.mediaQueryListInstanceMap.set(mediaQueryListInstance.media, {
+          query: mediaQueryListInstance,
+          queryName: queryName
+        });
 
         acc[queryName] = mediaQueryListInstance.matches;
         return acc;
       }, {});
 
+      // need to rerender with correct media if it didnt match up with initial
       if (!(0, _shallowequal2.default)(media, this.state.media)) {
         this.setState({ media: media }); // eslint-disable-line react/no-did-mount-set-state
       }
