@@ -10,10 +10,11 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 matches a set of values (used for server side rendering).
 - Abstracts away the context API, we use the legacy context API internally so we can support React 15 and 16. But as a
 consumer you don't need to worry.
+- You want specific react components being mounted and rendered based on media types
 
 ## Why not use this?
-We recommend using vanilla CSS media queries to build responsive websites, this is simpler, provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). 
-Use this library if you need to dramatically alter the page layout between media types (a good example would be if you had to render completely different components).
+We generally recommend using vanilla CSS media queries to build responsive websites, this is simpler, provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). 
+Use this library if you need to dramatically alter the page layout between media types (**examples include:** an experiment needs to be run on a specific screen width or an advertisement needs to be on specific screen width).
 
 ## Install
 
