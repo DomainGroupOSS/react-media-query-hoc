@@ -14,7 +14,7 @@ consumer you don't need to worry.
 
 ## Why not use this?
 We generally recommend using vanilla CSS media queries to build responsive websites, this is simpler, provides a smoother UX, also it mitigates having to guess the screen width during [server side rendering](#server-side-rendering). 
-Use this library if you need to dramatically alter the page layout between media types (**examples include:** an experiment needs to be run on a specific screen width or an advertisement needs to be on specific screen width).
+Use this library if you need to dramatically alter the page layout between media types (**some examples include:** an experiment needs to be run on a specific screen width or an advertisement needs to be on specific screen width).
 
 ## Install
 
