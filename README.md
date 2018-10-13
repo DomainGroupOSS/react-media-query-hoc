@@ -1,4 +1,7 @@
 # react-media-query-hoc
+
+[![NPM registry](https://img.shields.io/npm/v/react-media-query-hoc.svg?style=for-the-badge)](https://yarnpkg.com/en/package/react-media-query-hoc)
+
 A dead simple React Higher Order Component (HOC) that uses context for matching media queries.
 
 
