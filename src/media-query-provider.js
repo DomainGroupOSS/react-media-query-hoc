@@ -34,10 +34,6 @@ class MediaQueryProvider extends React.Component {
     this.mediaQueryListener = this.mediaQueryListener.bind(this);
   }
 
-  getChildContext() {
-    return this.state;
-  }
-
   componentDidMount() {
     const media = Object.keys(this.props.queries).reduce((acc, queryName) => {
       const mediaQueryListInstance = window.matchMedia(this.props.queries[queryName]);
