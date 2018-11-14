@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import shallowequal from 'shallowequal';
 // this is for server side rendering and does not use window.matchMedia
 import cssMediaQuery from 'css-mediaquery';
+import MediaContext from './context';
 
 const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
 
@@ -77,7 +78,7 @@ class MediaQueryProvider extends React.Component {
     }
   }
 
-  render() {
+  children() {
     if (React.Fragment) {
       return <React.Fragment>{this.props.children}</React.Fragment>;
     }
@@ -88,11 +89,15 @@ class MediaQueryProvider extends React.Component {
 
     return <div>{this.props.children}</div>;
   }
-}
 
-MediaQueryProvider.childContextTypes = {
-  media: PropTypes.object,
-};
+  render() {
+    return (
+      <MediaContext.Provider value={this.state.media}>
+        {this.children()}
+      </MediaContext.Provider>
+    );
+  }
+}
 
 MediaQueryProvider.propTypes = {
   children: PropTypes.node.isRequired,

@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
+import MediaContext from './context';
+
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name;
 }
@@ -11,18 +13,18 @@ const withMedia = (WrappedComponent) => {
     render() {
       const { wrappedRef, ...otherProps } = this.props;
       return (
-        <WrappedComponent
-          {...otherProps}
-          media={this.context.media}
-          ref={wrappedRef}
-        />
+        <MediaContext.Consumer>
+          {media => (
+            <WrappedComponent
+              {...otherProps}
+              media={media}
+              ref={wrappedRef}
+            />
+          )}
+        </MediaContext.Consumer>
       );
     }
   }
-
-  MediaQueryWrapper.contextTypes = {
-    media: PropTypes.object,
-  };
 
   MediaQueryWrapper.propTypes = {
     wrappedRef: PropTypes.func,
