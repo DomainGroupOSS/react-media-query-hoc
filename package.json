@@ -1,6 +1,6 @@
 {
   "name": "react-media-query-hoc",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A dead simple React Higher Order Component (HOC) that uses context for matching media queries",
   "main": "dist/index.js",
   "scripts": {
