@@ -62,17 +62,20 @@ class MediaQueryProvider extends React.Component {
       mediaQueryList.query.removeListener(this.mediaQueryListener));
   }
 
-  mediaQueryListener({ matches, media }) {
-    const { queryName } = this.mediaQueryListInstanceMap.get(media);
-    const newMedia = {
-      ...this.state.media,
+  _mediaRef = this.state.media
+  mediaQueryListener({matches, media}) {
+    const {queryName} = this.mediaQueryListInstanceMap.get(media)
+    this._mediaRef = {
+      ...this._mediaRef,
       [queryName]: matches,
-    };
-
-    if (!shallowequal(newMedia, this.state.media)) {
-      this.setState({ media: newMedia });
     }
+    this.updateState(this._mediaRef)
   }
+  updateState = _.debounce(newMedia => {
+    if (!shallowequal(newMedia, this.state.media)) {
+      this.setState({media: newMedia})
+    }
+  }, 100)
 
   children() {
     if (React.Fragment) {
