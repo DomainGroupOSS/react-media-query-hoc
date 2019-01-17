@@ -24,6 +24,10 @@ var _cssMediaquery = require('css-mediaquery');
 
 var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
+var _context = require('./context');
+
+var _context2 = _interopRequireDefault(_context);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -45,6 +49,14 @@ var MediaQueryProvider = function (_React$Component) {
     _classCallCheck(this, MediaQueryProvider);
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
+
+    _this._mediaRef = _this.state.media;
+    _this.updateState = _.debounce(function (newMedia) {
+      if (!(0, _shallowequal2.default)(newMedia, _this.state.media)) {
+        _this.setState({ media: newMedia });
+      }
+    }, 100);
+
 
     var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
       var query = _this.props.queries[queryName];
@@ -71,11 +83,6 @@ var MediaQueryProvider = function (_React$Component) {
   }
 
   _createClass(MediaQueryProvider, [{
-    key: 'getChildContext',
-    value: function getChildContext() {
-      return this.state;
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var _this2 = this;
@@ -119,15 +126,12 @@ var MediaQueryProvider = function (_React$Component) {
       var _mediaQueryListInstan = this.mediaQueryListInstanceMap.get(media),
           queryName = _mediaQueryListInstan.queryName;
 
-      var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
-
-      if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
-        this.setState({ media: newMedia });
-      }
+      this._mediaRef = _extends({}, this._mediaRef, _defineProperty({}, queryName, matches));
+      this.updateState(this._mediaRef);
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'children',
+    value: function children() {
       if (_react2.default.Fragment) {
         return _react2.default.createElement(
           _react2.default.Fragment,
@@ -146,14 +150,19 @@ var MediaQueryProvider = function (_React$Component) {
         this.props.children
       );
     }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _context2.default.Provider,
+        { value: this.state.media },
+        this.children()
+      );
+    }
   }]);
 
   return MediaQueryProvider;
 }(_react2.default.Component);
-
-MediaQueryProvider.childContextTypes = {
-  media: _propTypes2.default.object
-};
 
 MediaQueryProvider.propTypes = {
   children: _propTypes2.default.node.isRequired,
