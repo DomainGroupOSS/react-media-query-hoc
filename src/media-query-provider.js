@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowequal from 'shallowequal';
+import _ from 'lodash';
 // this is for server side rendering and does not use window.matchMedia
 import cssMediaQuery from 'css-mediaquery';
 import MediaContext from './context';
@@ -32,6 +33,13 @@ class MediaQueryProvider extends React.Component {
     };
 
     this.mediaQueryListener = this.mediaQueryListener.bind(this);
+
+    this.mediaRef = this.state.media;
+    this.updateState = _.debounce((newMedia) => {
+      if (!shallowequal(newMedia, this.state.media)) {
+        this.setState({ media: newMedia });
+      }
+    }, 100);
   }
 
   componentDidMount() {
@@ -62,20 +70,14 @@ class MediaQueryProvider extends React.Component {
       mediaQueryList.query.removeListener(this.mediaQueryListener));
   }
 
-  _mediaRef = this.state.media
-  mediaQueryListener({matches, media}) {
-    const {queryName} = this.mediaQueryListInstanceMap.get(media)
-    this._mediaRef = {
-      ...this._mediaRef,
+  mediaQueryListener({ matches, media }) {
+    const { queryName } = this.mediaQueryListInstanceMap.get(media);
+    this.mediaRef = {
+      ...this.mediaRef,
       [queryName]: matches,
-    }
-    this.updateState(this._mediaRef)
+    };
+    this.updateState(this.mediaRef);
   }
-  updateState = _.debounce(newMedia => {
-    if (!shallowequal(newMedia, this.state.media)) {
-      this.setState({media: newMedia})
-    }
-  }, 100)
 
   children() {
     if (React.Fragment) {

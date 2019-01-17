@@ -81,6 +81,7 @@
   "dependencies": {
     "css-mediaquery": "^0.1.2",
     "hoist-non-react-statics": "^2.5.0",
+    "lodash": "^4.17.11",
     "prop-types": "^15.5.10",
     "shallowequal": "^1.0.2"
   }

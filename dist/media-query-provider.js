@@ -20,6 +20,10 @@ var _shallowequal = require('shallowequal');
 
 var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _cssMediaquery = require('css-mediaquery');
 
 var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
@@ -50,14 +54,6 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    _this._mediaRef = _this.state.media;
-    _this.updateState = _.debounce(function (newMedia) {
-      if (!(0, _shallowequal2.default)(newMedia, _this.state.media)) {
-        _this.setState({ media: newMedia });
-      }
-    }, 100);
-
-
     var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
       var query = _this.props.queries[queryName];
 
@@ -79,6 +75,13 @@ var MediaQueryProvider = function (_React$Component) {
     };
 
     _this.mediaQueryListener = _this.mediaQueryListener.bind(_this);
+
+    _this.mediaRef = _this.state.media;
+    _this.updateState = _lodash2.default.debounce(function (newMedia) {
+      if (!(0, _shallowequal2.default)(newMedia, _this.state.media)) {
+        _this.setState({ media: newMedia });
+      }
+    }, 100);
     return _this;
   }
 
@@ -126,8 +129,8 @@ var MediaQueryProvider = function (_React$Component) {
       var _mediaQueryListInstan = this.mediaQueryListInstanceMap.get(media),
           queryName = _mediaQueryListInstan.queryName;
 
-      this._mediaRef = _extends({}, this._mediaRef, _defineProperty({}, queryName, matches));
-      this.updateState(this._mediaRef);
+      this.mediaRef = _extends({}, this.mediaRef, _defineProperty({}, queryName, matches));
+      this.updateState(this.mediaRef);
     }
   }, {
     key: 'children',
