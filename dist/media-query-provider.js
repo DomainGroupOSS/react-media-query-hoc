@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.MediaContext = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -20,17 +21,11 @@ var _shallowequal = require('shallowequal');
 
 var _shallowequal2 = _interopRequireDefault(_shallowequal);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _cssMediaquery = require('css-mediaquery');
 
 var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
-var _context = require('./context');
-
-var _context2 = _interopRequireDefault(_context);
+var _utils = require('./utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45,6 +40,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 var hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+
+var MediaContext = _react2.default.createContext();
 
 var MediaQueryProvider = function (_React$Component) {
   _inherits(MediaQueryProvider, _React$Component);
@@ -76,12 +73,12 @@ var MediaQueryProvider = function (_React$Component) {
 
     _this.mediaQueryListener = _this.mediaQueryListener.bind(_this);
 
-    _this.mediaRef = _this.state.media;
-    _this.updateState = _lodash2.default.debounce(function (newMedia) {
+    _this.currentMediaState = _this.state.media;
+    _this.updateState = (0, _utils.debounce)(function (newMedia) {
       if (!(0, _shallowequal2.default)(newMedia, _this.state.media)) {
         _this.setState({ media: newMedia });
       }
-    }, 100);
+    }, 20);
     return _this;
   }
 
@@ -129,8 +126,8 @@ var MediaQueryProvider = function (_React$Component) {
       var _mediaQueryListInstan = this.mediaQueryListInstanceMap.get(media),
           queryName = _mediaQueryListInstan.queryName;
 
-      this.mediaRef = _extends({}, this.mediaRef, _defineProperty({}, queryName, matches));
-      this.updateState(this.mediaRef);
+      this.currentMediaState = _extends({}, this.currentMediaState, _defineProperty({}, queryName, matches));
+      this.updateState(this.currentMediaState);
     }
   }, {
     key: 'children',
@@ -157,7 +154,7 @@ var MediaQueryProvider = function (_React$Component) {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        _context2.default.Provider,
+        MediaContext.Provider,
         { value: this.state.media },
         this.children()
       );
@@ -183,4 +180,5 @@ MediaQueryProvider.defaultProps = {
   values: {}
 };
 
+exports.MediaContext = MediaContext;
 exports.default = MediaQueryProvider;

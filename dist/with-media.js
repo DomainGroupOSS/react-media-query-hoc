@@ -20,9 +20,7 @@ var _hoistNonReactStatics = require('hoist-non-react-statics');
 
 var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
-var _context = require('./context');
-
-var _context2 = _interopRequireDefault(_context);
+var _mediaQueryProvider = require('./media-query-provider');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -56,13 +54,10 @@ var withMedia = function withMedia(WrappedComponent) {
             otherProps = _objectWithoutProperties(_props, ['wrappedRef']);
 
         return _react2.default.createElement(
-          _context2.default.Consumer,
+          _mediaQueryProvider.MediaContext.Consumer,
           null,
           function (media) {
-            return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, {
-              media: media,
-              ref: wrappedRef
-            }));
+            return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, { media: media, ref: wrappedRef }));
           }
         );
       }
