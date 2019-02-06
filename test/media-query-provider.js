@@ -4,7 +4,20 @@ import { expect } from 'chai';
 import { shallow, mount } from 'enzyme';
 import sinon from 'sinon';
 import getMatchMediaMock from './utils/get-match-media-mock';
-import MediaQueryProvider from '../src/media-query-provider';
+import MediaQueryProvider, { MediaContext } from '../src/media-query-provider';
+
+function mock(fn = () => {}) {
+  const calles = [];
+  function mockedFn(...args) {
+    calles.push(args);
+    return fn(...args);
+  }
+
+  mockedFn.calles = () => calles;
+  mockedFn.lastCalles = () => calles[calles.length - 1];
+  mockedFn.lastNthCalles = (nth = 1) => calles.slice(calles.length - nth);
+  return mockedFn;
+}
 
 describe('<MediaQueryProvider />', () => {
   let component;
@@ -42,57 +55,48 @@ describe('<MediaQueryProvider />', () => {
     expect(component.props().queries).to.be.an('object');
   });
 
+  function setupMountMediaQueryProvider({ queries, values } = {}) {
+    const child = mock();
+    component = mount(
+      <MediaQueryProvider queries={queries} values={values}>
+        <MediaContext>{child}</MediaContext>
+      </MediaQueryProvider>,
+    );
+    return { component, child };
+  }
+
   it('should have child context with default media', () => {
-    expect(component.instance().getChildContext().media).to.eql({
-      desktop: true,
-      largeDesktop: false,
-      mobile: false,
-      tablet: false,
-    });
+    const { child } = setupMountMediaQueryProvider();
+    expect(child.lastCalles()).to.eql([
+      {
+        desktop: true,
+        largeDesktop: false,
+        mobile: false,
+        tablet: false,
+      },
+    ]);
   });
 
   it('should have child context with other media', () => {
     const queries = {
       someMediaQuery: 'screen and (max-width: 1111px)',
-      someMediaQuery2: 'screen and (min-width: 2222px) and (max-width: 33333px)',
-      someMediaQuery3: 'screen and (min-width: 44444px) and (max-width: 55555px)',
+      someMediaQuery2:
+        'screen and (min-width: 2222px) and (max-width: 33333px)',
+      someMediaQuery3:
+        'screen and (min-width: 44444px) and (max-width: 55555px)',
       someMediaQuery4: 'screen and (min-width: 66666px)',
     };
 
-    const otherComponent = mount(
-      <MediaQueryProvider queries={queries}>
-        <p>Test123</p>
-      </MediaQueryProvider>,
-    );
+    const { child } = setupMountMediaQueryProvider({ queries });
 
-    expect(otherComponent.instance().getChildContext().media).to.eql({
-      someMediaQuery: false,
-      someMediaQuery2: false,
-      someMediaQuery3: false,
-      someMediaQuery4: false,
-    });
-  });
-
-  context('when mobile matches', () => {
-    let mobileComponent;
-
-    before(() => {
-      mobileComponent = mount(
-        <MediaQueryProvider>
-          <p>Test123</p>
-        </MediaQueryProvider>,
-      );
-    });
-
-    it('should include mobile in the media context', () => {
-      const { media } = mobileComponent.instance().getChildContext();
-      expect(media).to.eql({
-        desktop: true,
-        largeDesktop: false,
-        mobile: false,
-        tablet: false,
-      });
-    });
+    expect(child.lastCalles()).to.eql([
+      {
+        someMediaQuery: false,
+        someMediaQuery2: false,
+        someMediaQuery3: false,
+        someMediaQuery4: false,
+      },
+    ]);
   });
 
   it('should render mobile when value specified from server', () => {
@@ -102,24 +106,25 @@ describe('<MediaQueryProvider />', () => {
     };
 
     // dont want to do client mount
-    const stub = sinon.stub(MediaQueryProvider.prototype, 'componentDidMount').returns('hi!');
+    const stub = sinon
+      .stub(MediaQueryProvider.prototype, 'componentDidMount')
+      .returns('hi!');
 
-    const componentWithValues = mount(
-      <MediaQueryProvider values={values}>
-        <p>Test123</p>
-      </MediaQueryProvider>,
+    const { child } = setupMountMediaQueryProvider({ values });
+
+    expect(MediaQueryProvider.prototype.componentDidMount).to.have.property(
+      'callCount',
+      1,
     );
 
-    expect(MediaQueryProvider.prototype.componentDidMount).to.have.property('callCount', 1);
-
-    const { media } = componentWithValues.instance().getChildContext();
-
-    expect(media).to.eql({
-      mobile: true,
-      tablet: false,
-      desktop: false,
-      largeDesktop: false,
-    });
+    expect(child.lastCalles()).to.eql([
+      {
+        mobile: true,
+        tablet: false,
+        desktop: false,
+        largeDesktop: false,
+      },
+    ]);
 
     stub.restore();
   });
@@ -139,20 +144,32 @@ describe('<MediaQueryProvider />', () => {
   });
 
   it('handles matchMedia listener events and updates the context', () => {
-    const testComponent = mount(
-      <MediaQueryProvider>
-        <p>Test123</p>
-      </MediaQueryProvider>,
-    );
+    const { child } = setupMountMediaQueryProvider();
 
-    const { media: mediaBefore } = testComponent.instance().getChildContext();
     matchMediaMock.update({ type: 'screen', width: 600 });
-    const { media: mediaAfter } = testComponent.instance().getChildContext();
 
-    expect(mediaBefore).to.eql({ desktop: true, largeDesktop: false, mobile: false, tablet: false });
-    expect(mediaAfter).to.eql({ desktop: false, largeDesktop: false, mobile: true, tablet: false });
+    // wait untile component updated
+    setTimeout(() => {
+      expect(child.lastNthCalles(2)).to.eql([
+        [
+          {
+            desktop: true,
+            largeDesktop: false,
+            mobile: false,
+            tablet: false,
+          },
+        ],
+        [
+          {
+            desktop: false,
+            largeDesktop: false,
+            mobile: true,
+            tablet: false,
+          },
+        ],
+      ]);
+    }, 20);
   });
-
 
   describe('constructor state initialisation', () => {
     it('uses `cssMediaQuery` to query when values is provided', () => {
@@ -200,7 +217,9 @@ describe('<MediaQueryProvider />', () => {
 
     window.matchMedia = (query) => {
       const mockInstance = oldWindowMatchMedia(query);
-      mediaQueryListInstanceSpies.push(sinon.spy(mockInstance, 'removeListener'));
+      mediaQueryListInstanceSpies.push(
+        sinon.spy(mockInstance, 'removeListener'),
+      );
       return mockInstance;
     };
 

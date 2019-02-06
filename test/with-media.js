@@ -4,39 +4,38 @@ import { mount } from 'enzyme';
 import withMedia from '../src/with-media';
 import TestComponent from './utils/test-component';
 
-const testContext = {
-  context: {
-    media: {
-      mobile: true,
-    },
-  },
-};
+import * as providerMock from '../src/media-query-provider';
 
 describe('<withMedia />', () => {
   const TestComponentWithMedia = withMedia(TestComponent);
   let component;
 
+  let media = { mobile: true };
+  const originalProvider = providerMock.MediaContext;
+  before(() => {
+    providerMock.MediaContext.Consumer = ({ children }) => children(media);
+  });
+  afterEach(() => {
+    media = { mobile: true };
+  });
+  after(() => {
+    providerMock.MediaContext.Consumer = originalProvider;
+  });
+
   it('should render with HOC', () => {
     expect(() => {
-      component = mount(<TestComponentWithMedia />, testContext);
+      component = mount(<TestComponentWithMedia />);
     }).to.not.throw();
   });
 
   it('should render mobile view', () => {
-    component = mount(<TestComponentWithMedia />, testContext);
+    component = mount(<TestComponentWithMedia />);
     expect(component.text()).to.equal('Mobile!');
   });
 
   it('should render other view', () => {
-    const otherContext = {
-      context: {
-        media: {
-          mobile: false,
-        },
-      },
-    };
-
-    component = mount(<TestComponentWithMedia />, otherContext);
+    media = { mobile: false };
+    component = mount(<TestComponentWithMedia />);
     expect(component.text()).to.equal('Other!');
   });
 
@@ -48,7 +47,6 @@ describe('<withMedia />', () => {
           receivedRef = true;
         }}
       />,
-      testContext,
     );
     expect(receivedRef).to.equal(true);
   });
