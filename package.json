@@ -1,6 +1,6 @@
 {
-  "name": "react-media-query-hoc-with-context",
-  "version": "1.0.5",
+  "name": "react-media-query-hoc",
+  "version": "1.0.3",
   "description": "A dead simple React Higher Order Component (HOC) that uses context for matching media queries",
   "main": "dist/index.js",
   "scripts": {
@@ -41,8 +41,7 @@
       "react"
     ],
     "plugins": [
-      "transform-object-rest-spread",
-      "transform-class-properties"
+      "transform-object-rest-spread"
     ]
   },
   "peerDependencies": {
@@ -50,7 +49,6 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
@@ -72,16 +70,15 @@
     "literalify": "^0.4.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
-    "react": "^16.3.2",
+    "react": "16.3.2",
     "react-addons-test-utils": "^15.1.0",
-    "react-dom": "^16.3.2",
+    "react-dom": "16.3.2",
     "sinon": "^5.0.7",
     "start-server-and-test": "^1.7.0"
   },
   "dependencies": {
     "css-mediaquery": "^0.1.2",
     "hoist-non-react-statics": "^2.5.0",
-    "lodash": "^4.17.11",
     "prop-types": "^15.5.10",
     "shallowequal": "^1.0.2"
   }

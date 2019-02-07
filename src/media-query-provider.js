@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shallowequal from 'shallowequal';
-import _ from 'lodash';
 // this is for server side rendering and does not use window.matchMedia
 import cssMediaQuery from 'css-mediaquery';
-import MediaContext from './context';
 
-const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+import { debounce } from './utils';
+
+const hasMatchMedia =
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+
+const MediaContext = React.createContext();
 
 class MediaQueryProvider extends React.Component {
   constructor(props) {
@@ -20,7 +23,9 @@ class MediaQueryProvider extends React.Component {
       } else {
         // if the consumer has not set `values` and is server rendering, default to false
         // because we don't know the screen size
-        acc[queryName] = hasMatchMedia ? window.matchMedia(query).matches : false;
+        acc[queryName] = hasMatchMedia
+          ? window.matchMedia(query).matches
+          : false;
       }
 
       return acc;
@@ -34,12 +39,12 @@ class MediaQueryProvider extends React.Component {
 
     this.mediaQueryListener = this.mediaQueryListener.bind(this);
 
-    this.mediaRef = this.state.media;
-    this.updateState = _.debounce((newMedia) => {
+    this.currentMediaState = this.state.media;
+    this.updateState = debounce((newMedia) => {
       if (!shallowequal(newMedia, this.state.media)) {
         this.setState({ media: newMedia });
       }
-    }, 100);
+    }, 20);
   }
 
   componentDidMount() {
@@ -72,11 +77,11 @@ class MediaQueryProvider extends React.Component {
 
   mediaQueryListener({ matches, media }) {
     const { queryName } = this.mediaQueryListInstanceMap.get(media);
-    this.mediaRef = {
-      ...this.mediaRef,
+    this.currentMediaState = {
+      ...this.currentMediaState,
       [queryName]: matches,
     };
-    this.updateState(this.mediaRef);
+    this.updateState(this.currentMediaState);
   }
 
   children() {
@@ -116,4 +121,5 @@ MediaQueryProvider.defaultProps = {
   values: {},
 };
 
+export { MediaContext };
 export default MediaQueryProvider;
