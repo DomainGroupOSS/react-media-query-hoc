@@ -6,19 +6,6 @@ import sinon from 'sinon';
 import getMatchMediaMock from './utils/get-match-media-mock';
 import MediaQueryProvider, { MediaContext } from '../src/media-query-provider';
 
-function mock(fn = () => {}) {
-  const calles = [];
-  function mockedFn(...args) {
-    calles.push(args);
-    return fn(...args);
-  }
-
-  mockedFn.calles = () => calles;
-  mockedFn.lastCalles = () => calles[calles.length - 1];
-  mockedFn.lastNthCalles = (nth = 1) => calles.slice(calles.length - nth);
-  return mockedFn;
-}
-
 describe('<MediaQueryProvider />', () => {
   let component;
   let matchMediaMock;
@@ -56,7 +43,7 @@ describe('<MediaQueryProvider />', () => {
   });
 
   function setupMountMediaQueryProvider({ queries, values } = {}) {
-    const child = mock();
+    const child = sinon.spy();
     component = mount(
       <MediaQueryProvider queries={queries} values={values}>
         <MediaContext>{child}</MediaContext>
@@ -67,7 +54,8 @@ describe('<MediaQueryProvider />', () => {
 
   it('should have child context with default media', () => {
     const { child } = setupMountMediaQueryProvider();
-    expect(child.lastCalles()).to.eql([
+
+    expect(child.lastCall.args).to.eql([
       {
         desktop: true,
         largeDesktop: false,
@@ -89,7 +77,7 @@ describe('<MediaQueryProvider />', () => {
 
     const { child } = setupMountMediaQueryProvider({ queries });
 
-    expect(child.lastCalles()).to.eql([
+    expect(child.lastCall.args).to.eql([
       {
         someMediaQuery: false,
         someMediaQuery2: false,
@@ -117,7 +105,7 @@ describe('<MediaQueryProvider />', () => {
       1,
     );
 
-    expect(child.lastCalles()).to.eql([
+    expect(child.lastCall.args).to.eql([
       {
         mobile: true,
         tablet: false,
@@ -150,7 +138,8 @@ describe('<MediaQueryProvider />', () => {
 
     // wait untile component updated
     setTimeout(() => {
-      expect(child.lastNthCalles(2)).to.eql([
+      // get last 2 args
+      expect(child.args.slice(child.args.length - 2)).to.eql([
         [
           {
             desktop: true,
