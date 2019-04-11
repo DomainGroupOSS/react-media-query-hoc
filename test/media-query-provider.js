@@ -138,7 +138,7 @@ describe('<MediaQueryProvider />', () => {
     expect(spy.callCount).to.equal(4);
   });
 
-  it('handles matchMedia listener events and updates the context', () => {
+  it('handles matchMedia listener events and updates the context', (done) => {
     const testComponent = mount(
       <MediaQueryProvider>
         <p>Test123</p>
@@ -146,11 +146,16 @@ describe('<MediaQueryProvider />', () => {
     );
 
     const { media: mediaBefore } = testComponent.instance().getChildContext();
-    matchMediaMock.update({ type: 'screen', width: 600 });
-    const { media: mediaAfter } = testComponent.instance().getChildContext();
-
     expect(mediaBefore).to.eql({ desktop: true, largeDesktop: false, mobile: false, tablet: false });
-    expect(mediaAfter).to.eql({ desktop: false, largeDesktop: false, mobile: true, tablet: false });
+
+    matchMediaMock.update({ type: 'screen', width: 600 });
+    // Set timeout because we don't longer expect this to fire immediately due to
+    // logic that prevents multiple renders from happening when breakpoints change.
+    setTimeout(() => {
+      const { media: mediaAfter } = testComponent.instance().getChildContext();
+      expect(mediaAfter).to.eql({ desktop: false, largeDesktop: false, mobile: true, tablet: false });
+      done();
+    }, 0);
   });
 
 

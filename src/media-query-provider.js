@@ -10,6 +10,8 @@ class MediaQueryProvider extends React.Component {
   constructor(props) {
     super(props);
 
+    this.media = {};
+
     const media = Object.keys(this.props.queries).reduce((acc, queryName) => {
       const query = this.props.queries[queryName];
 
@@ -25,6 +27,8 @@ class MediaQueryProvider extends React.Component {
     }, {});
 
     this.mediaQueryListInstanceMap = new Map();
+
+    this.media = media;
 
     this.state = {
       media,
@@ -54,9 +58,14 @@ class MediaQueryProvider extends React.Component {
       return acc;
     }, {});
 
+
     // need to rerender with correct media if it didnt match up with initial
     if (!shallowequal(media, this.state.media)) {
-      this.setState({ media }); // eslint-disable-line react/no-did-mount-set-state
+      this.media = media;
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        media: { ...this.media },
+      });
     }
   }
 
@@ -67,14 +76,20 @@ class MediaQueryProvider extends React.Component {
 
   mediaQueryListener({ matches, media }) {
     const { queryName } = this.mediaQueryListInstanceMap.get(media);
-    const newMedia = {
-      ...this.state.media,
-      [queryName]: matches,
-    };
-
-    if (!shallowequal(newMedia, this.state.media)) {
-      this.setState({ media: newMedia });
+    this.media[queryName] = matches;
+    if (this.timer) {
+      clearTimeout(this.timer);
     }
+    // using setTimeout with 0ms to push the state change to the end of the event loop.
+    // This fixes an issue where we get multiple and inconsistent re-renders happening
+    // on resize due to the state changes from two breakpoints firing one after the other
+    // by preventing the first event from making it to state, and only taking the last event.
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      this.setState({
+        media: { ...this.media },
+      });
+    }, 0);
   }
 
   render() {

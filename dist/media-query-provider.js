@@ -26,8 +26,6 @@ var _cssMediaquery2 = _interopRequireDefault(_cssMediaquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -46,6 +44,8 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
+    _this.media = {};
+
     var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
       var query = _this.props.queries[queryName];
 
@@ -61,6 +61,8 @@ var MediaQueryProvider = function (_React$Component) {
     }, {});
 
     _this.mediaQueryListInstanceMap = new Map();
+
+    _this.media = media;
 
     _this.state = {
       media: media
@@ -98,7 +100,11 @@ var MediaQueryProvider = function (_React$Component) {
 
       // need to rerender with correct media if it didnt match up with initial
       if (!(0, _shallowequal2.default)(media, this.state.media)) {
-        this.setState({ media: media }); // eslint-disable-line react/no-did-mount-set-state
+        this.media = media;
+        // eslint-disable-next-line react/no-did-mount-set-state
+        this.setState({
+          media: _extends({}, this.media)
+        });
       }
     }
   }, {
@@ -113,17 +119,28 @@ var MediaQueryProvider = function (_React$Component) {
   }, {
     key: 'mediaQueryListener',
     value: function mediaQueryListener(_ref) {
+      var _this4 = this;
+
       var matches = _ref.matches,
           media = _ref.media;
 
       var _mediaQueryListInstan = this.mediaQueryListInstanceMap.get(media),
           queryName = _mediaQueryListInstan.queryName;
 
-      var newMedia = _extends({}, this.state.media, _defineProperty({}, queryName, matches));
-
-      if (!(0, _shallowequal2.default)(newMedia, this.state.media)) {
-        this.setState({ media: newMedia });
+      this.media[queryName] = matches;
+      if (this.timer) {
+        clearTimeout(this.timer);
       }
+      // using setTimeout with 0ms to push the state change to the end of the event loop.
+      // This fixes an issue where we get multiple and inconsistent re-renders happening
+      // on resize due to the state changes from two breakpoints firing one after the other
+      // by preventing the first event from making it to state, and only taking the last event.
+      this.timer = setTimeout(function () {
+        _this4.timer = null;
+        _this4.setState({
+          media: _extends({}, _this4.media)
+        });
+      }, 0);
     }
   }, {
     key: 'render',
