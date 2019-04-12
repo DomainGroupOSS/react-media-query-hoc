@@ -44,8 +44,6 @@ var MediaQueryProvider = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (MediaQueryProvider.__proto__ || Object.getPrototypeOf(MediaQueryProvider)).call(this, props));
 
-    _this.media = {};
-
     var media = Object.keys(_this.props.queries).reduce(function (acc, queryName) {
       var query = _this.props.queries[queryName];
 
