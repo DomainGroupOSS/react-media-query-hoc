@@ -20,6 +20,8 @@ var _hoistNonReactStatics = require('hoist-non-react-statics');
 
 var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
+var _mediaQueryProvider = require('./media-query-provider');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -51,19 +53,18 @@ var withMedia = function withMedia(WrappedComponent) {
             wrappedRef = _props.wrappedRef,
             otherProps = _objectWithoutProperties(_props, ['wrappedRef']);
 
-        return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, {
-          media: this.context.media,
-          ref: wrappedRef
-        }));
+        return _react2.default.createElement(
+          _mediaQueryProvider.MediaContext.Consumer,
+          null,
+          function (media) {
+            return _react2.default.createElement(WrappedComponent, _extends({}, otherProps, { media: media, ref: wrappedRef }));
+          }
+        );
       }
     }]);
 
     return MediaQueryWrapper;
   }(_react2.default.Component);
-
-  MediaQueryWrapper.contextTypes = {
-    media: _propTypes2.default.object
-  };
 
   MediaQueryWrapper.propTypes = {
     wrappedRef: _propTypes2.default.func
