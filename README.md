@@ -7,10 +7,9 @@ A dead simple React Higher Order Component (HOC) that uses context for matching 
 - A simple API which doesnt require you to put `MediaQuery` components all over your code base
 - More performant (you only need 1 parent `MediaQueryProvider` that listens to media events you wish to configure)
 - Easier to test than other react media query libraries
+- Small [bundlephobia](https://bundlephobia.com/result?p=react-media-query-hoc@latest)
 - Uses [css-mediaquery](https://github.com/ericf/css-mediaquery) which parses and determines if a given CSS Media Query
 matches a set of values (used for server side rendering).
-- Abstracts away the context API, we use the legacy context API internally so we can support React 15 and 16. But as a
-consumer you don't need to worry.
 - You want specific react components being mounted and rendered based on media types
 
 ## Why not use this?
