@@ -10,8 +10,6 @@ class MediaQueryProvider extends React.Component {
   constructor(props) {
     super(props);
 
-    this.media = {};
-
     const media = Object.keys(this.props.queries).reduce((acc, queryName) => {
       const query = this.props.queries[queryName];
 
