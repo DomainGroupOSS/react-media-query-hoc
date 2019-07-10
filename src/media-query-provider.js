@@ -118,7 +118,7 @@ MediaQueryProvider.defaultProps = {
     desktop: 'screen and (min-width: 1021px) and (max-width: 1440px)',
     largeDesktop: 'screen and (min-width: 1441px)',
   },
-  values: {},
+  values: undefined,
 };
 
 export { MediaContext };
