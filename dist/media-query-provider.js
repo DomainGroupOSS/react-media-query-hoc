@@ -105,6 +105,7 @@ var MediaQueryProvider = function (_React$Component) {
 
       // need to rerender with correct media if it didnt match up with initial
       if (!(0, _shallowequal2.default)(media, this.state.media)) {
+        this.currentMediaState = media;
         this.setState({ media: media }); // eslint-disable-line react/no-did-mount-set-state
       }
     }
