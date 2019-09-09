@@ -80,9 +80,8 @@ This is a HOC to provide media match props to your component.
 ```javascript
 import { withMedia } from 'react-media-query-hoc';
 
-const MyComponent = ({ media, ...props}) => (
-  if(media.tablet || media.mobile) {
-    ..
+const MyComponent = ({ media, ...props}) => {
+  if (media.tablet || media.mobile) {
     return (
       <div>
         Mobile and Tablet View
@@ -94,14 +93,45 @@ const MyComponent = ({ media, ...props}) => (
     <div>
       Other View
     </div>
-  )
-);
+  );
+};
 
 export const BaseMyComponent = MyComponent;
 export default withMedia(MyComponent);
 ```
 
 Components wrapped by `withMedia()` won't work with React's usual `ref` mechanism, because the ref supplied will be for `withMedia` rather than the wrapped component. Therefore a prop, `wrappedRef` provides the same function. Note: this means the wrapped component can not be a [stateless function](https://github.com/facebook/react/issues/10831).
+
+### `MediaContext`
+This is the React Context exported and ready to be used with React `useContext` hook. It has a default value of `{}`, present when the component that consumes the context is not wrapped with `MediaQueryProvider`.
+
+```javascript
+import { MediaContext } from 'react-media-query-hoc';
+import { useContext } from 'react';
+
+const MyComponent = (props) => {
+  const media = useContext(MediaContext);
+
+  if(media.tablet || media.mobile) {
+    return (
+      <div>
+        Mobile and Tablet View
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      Other View
+    </div>
+  );
+};
+
+export default MyComponent;
+
+// default value
+ReactDOM.render(<MyComponent />);     // Renders 'Other View';
+```
 
 ### Server Side Rendering
 
