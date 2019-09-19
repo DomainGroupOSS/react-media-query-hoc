@@ -9,7 +9,7 @@ import { debounce } from './utils';
 const hasMatchMedia =
   typeof window !== 'undefined' && typeof window.matchMedia === 'function';
 
-const MediaContext = React.createContext();
+const MediaContext = React.createContext({});
 
 class MediaQueryProvider extends React.Component {
   constructor(props) {

@@ -41,7 +41,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
 
-var MediaContext = _react2.default.createContext();
+var MediaContext = _react2.default.createContext({});
 
 var MediaQueryProvider = function (_React$Component) {
   _inherits(MediaQueryProvider, _React$Component);
