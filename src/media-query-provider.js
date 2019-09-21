@@ -66,6 +66,7 @@ class MediaQueryProvider extends React.Component {
 
     // need to rerender with correct media if it didnt match up with initial
     if (!shallowequal(media, this.state.media)) {
+      this.currentMediaState = media
       this.setState({ media }); // eslint-disable-line react/no-did-mount-set-state
     }
   }
