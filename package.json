@@ -66,7 +66,7 @@
     "eslint-plugin-react": "^7.8.2",
     "express": "^4.16.3",
     "htmlescape": "^1.1.1",
-    "jsdom": "^11.0.0",
+    "jsdom": "^16.5.0",
     "literalify": "^0.4.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
